@@ -1,17 +1,17 @@
 package com.spotgym.spot.data
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class RoutineRepository(private val routineDao: RoutineDao) {
 
-    val readAllData : LiveData<List<Routine>> = routineDao.getAll();
+    val readAllData : Flow<List<Routine>> = routineDao.getAll()
 
     suspend fun addRoutine(routine: Routine) {
-        routineDao.insert(routine);
+        routineDao.insert(routine)
     }
 
     suspend fun updateRoutine(routine: Routine) {
-        routineDao.update(routine);
+        routineDao.update(routine)
     }
 
     suspend fun deleteRoutine(routine: Routine) {

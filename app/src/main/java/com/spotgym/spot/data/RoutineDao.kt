@@ -1,13 +1,13 @@
 package com.spotgym.spot.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RoutineDao {
 
     @Query("select * from routines")
-    fun getAll() : LiveData<List<Routine>>
+    fun getAll() : Flow<List<Routine>>
 
     @Query("select * from routines where id = :id")
     fun getById(id: Int): Routine?
