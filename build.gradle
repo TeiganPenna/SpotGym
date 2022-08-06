@@ -7,7 +7,7 @@ buildscript {
 
         // App dependencies
         activityComposeVersion = '1.5.1'
-        composeVersion = '1.1.0'
+        composeVersion = '1.2.0'
         esspressoVersion = '3.4.0'
         junitVersion = '4.13.2'
         ktxVersion = '1.8.0'
