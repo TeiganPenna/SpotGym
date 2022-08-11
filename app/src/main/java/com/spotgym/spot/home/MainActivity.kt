@@ -16,8 +16,18 @@ class MainActivity : ComponentActivity() {
             SpotTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = Routes.Routines.route) {
-                    composable(Routes.Routines.route) { RoutinesHome() }
+                NavHost(navController = navController, startDestination = Routes.Home.route) {
+                    composable(Routes.Home.route) {
+                        SpotHome(
+                            onRoutineClicked = { routineId ->
+                                navController.navigate(Routes.Routine.route + "/$routineId")
+                            }
+                        )
+                    }
+                    composable(Routes.Routine.route + "/{routineId}") { backStackEntry ->
+                        val routineId = backStackEntry.arguments?.getString("routineId")
+                        RoutinePage(routineId!!)
+                    }
                 }
             }
         }
@@ -25,5 +35,6 @@ class MainActivity : ComponentActivity() {
 }
 
 sealed class Routes(val route: String) {
-    object Routines : Routes("routines")
+    object Home : Routes("home")
+    object Routine : Routes("routine")
 }

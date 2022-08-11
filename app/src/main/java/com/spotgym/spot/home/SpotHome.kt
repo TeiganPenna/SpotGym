@@ -1,5 +1,6 @@
 package com.spotgym.spot.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +14,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.spotgym.spot.R
 
+typealias OnRoutineClicked = (String) -> Unit
+
 @Composable
-fun RoutinesHome() {
+fun SpotHome(
+    onRoutineClicked: OnRoutineClicked
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -29,23 +34,40 @@ fun RoutinesHome() {
             color = MaterialTheme.colors.background
         ) {
             Column(modifier = Modifier.padding(10.dp)) {
-                RoutineCard("Day A", "Chest day: Bench press, Flies, and Dumbbell curls")
-                RoutineCard("Day B", "Back day: Pull ups, Rows, and Leg press")
-                RoutineCard("Day C", "Triceps day: Bench press, Extensions, and Flies")
-                RoutineCard("Day D", "Leg day: Squats, Deadlifts, and Leg press")
+                RoutineCard(
+                    name = "Day A",
+                    description = "Chest day: Bench press, Flies, and Dumbbell curls",
+                    onRoutineClicked = onRoutineClicked)
+                RoutineCard(
+                    name = "Day B", description = "Back day: Pull ups, Rows, and Leg press",
+                    onRoutineClicked = onRoutineClicked)
+                RoutineCard(
+                    name = "Day C",
+                    description = "Triceps day: Bench press, Extensions, and Flies",
+                    onRoutineClicked = onRoutineClicked)
+                RoutineCard(
+                    name = "Day D",
+                    description = "Leg day: Squats, Deadlifts, and Leg press",
+                    onRoutineClicked = onRoutineClicked)
             }
         }
     }
 }
 
 @Composable
-private fun RoutineCard(name: String, description: String) {
+private fun RoutineCard(
+    name: String,
+    description: String,
+    onRoutineClicked: OnRoutineClicked
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp),
+            .padding(5.dp)
+            .clickable {
+                       onRoutineClicked(name)
+            },
         elevation = 10.dp
-//            .clickable {}
     ) {
         Column(
             modifier = Modifier.padding(15.dp)
