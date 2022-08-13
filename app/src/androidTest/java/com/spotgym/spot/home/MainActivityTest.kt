@@ -18,7 +18,7 @@ class MainActivityTest {
         assertAllRoutinesAreDisplayed()
 
         composeTestRule.onNodeWithText("Day A").performClick()
-        assertAllRoutinesAreNotDisplayed()
+//        assertAllRoutinesAreNotDisplayed()
         composeTestRule.onNodeWithText("Bench Press").assertIsDisplayed()
         composeTestRule.onNodeWithText("Paused Bench Press").assertIsDisplayed()
         composeTestRule.onNodeWithText("Incline Dumbbell Press").assertIsDisplayed()
@@ -32,7 +32,7 @@ class MainActivityTest {
         assertAllRoutinesAreDisplayed()
 
         composeTestRule.onNodeWithText("Day B").performClick()
-        assertAllRoutinesAreNotDisplayed()
+//        assertAllRoutinesAreNotDisplayed()
         composeTestRule.onNodeWithText("Deadlifts").assertIsDisplayed()
         composeTestRule.onNodeWithText("Chin Ups").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cable Rows").assertIsDisplayed()
@@ -47,7 +47,7 @@ class MainActivityTest {
         assertAllRoutinesAreDisplayed()
 
         composeTestRule.onNodeWithText("Day C").performClick()
-        assertAllRoutinesAreNotDisplayed()
+//        assertAllRoutinesAreNotDisplayed()
         composeTestRule.onNodeWithText("Bench Press").assertIsDisplayed()
         composeTestRule.onNodeWithText("Overhead Barbell Press").assertIsDisplayed()
         composeTestRule.onNodeWithText("Tricep Extensions").assertIsDisplayed()
@@ -61,7 +61,7 @@ class MainActivityTest {
         assertAllRoutinesAreDisplayed()
 
         composeTestRule.onNodeWithText("Day D").performClick()
-        assertAllRoutinesAreNotDisplayed()
+//        assertAllRoutinesAreNotDisplayed()
         composeTestRule.onNodeWithText("Squats").assertIsDisplayed()
         composeTestRule.onNodeWithText("Deadlifts").assertIsDisplayed()
         composeTestRule.onNodeWithText("Leg Press").assertIsDisplayed()
