@@ -45,7 +45,7 @@ fun RoutinePage(
                         ExerciseCard(name = "Chin Ups", description = "3 sets of 8-12 reps")
                         ExerciseCard(name = "Cable Rows", description = "3 sets of 8-12 reps")
                         ExerciseCard(name = "Dumbbell Rows", description = "2 sets of 15 reps")
-                        ExerciseCard(name = "Tricep Push Downs", description = "3 sets of 8-12 reps")
+                        ExerciseCard(name = "Dips", description = "3 sets of 8-12 reps")
                         ExerciseCard(name = "Leg Press", description = "3 sets of 8-12 reps")
                         ExerciseCard(name = "Calf Raises", description = "3 sets of 15 reps")
                     }
@@ -56,7 +56,7 @@ fun RoutinePage(
                         ExerciseCard(name = "Overhead Barbell Press", description = "3 sets of 8-12 reps")
                         ExerciseCard(name = "Tricep Extensions", description = "3 sets of 8-12 reps")
                         ExerciseCard(name = "Overhead Dumbbell Press", description = "3 sets of 8-12 reps")
-                        ExerciseCard(name = "Overhead Tricep Extensions", description = "3 sets of 8-12 reps")
+                        ExerciseCard(name = "Overhead Dumbbell Extensions", description = "3 sets of 8-12 reps")
                         ExerciseCard(name = "Dumbbell Shoulder Flies", description = "3 sets of 20 reps, alternating side and front")
                     }
                 }
