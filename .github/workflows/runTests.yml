@@ -76,3 +76,10 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew connectedCheck
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: Test-Reports
+          path: app/build/reports
+        if: always()
