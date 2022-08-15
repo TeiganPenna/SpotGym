@@ -5,7 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,18 +42,22 @@ fun SpotHome(
                 RoutineCard(
                     name = "Day A",
                     description = "Chest day: Bench press, Flies, and Dumbbell curls",
-                    onRoutineClicked = onRoutineClicked)
+                    onRoutineClicked = onRoutineClicked
+                )
                 RoutineCard(
                     name = "Day B", description = "Back day: Pull ups, Rows, and Leg press",
-                    onRoutineClicked = onRoutineClicked)
+                    onRoutineClicked = onRoutineClicked
+                )
                 RoutineCard(
                     name = "Day C",
                     description = "Triceps day: Bench press, Extensions, and Flies",
-                    onRoutineClicked = onRoutineClicked)
+                    onRoutineClicked = onRoutineClicked
+                )
                 RoutineCard(
                     name = "Day D",
                     description = "Leg day: Squats, Deadlifts, and Leg press",
-                    onRoutineClicked = onRoutineClicked)
+                    onRoutineClicked = onRoutineClicked
+                )
             }
         }
     }
@@ -65,7 +74,7 @@ private fun RoutineCard(
             .fillMaxWidth()
             .padding(5.dp)
             .clickable {
-                       onRoutineClicked(name)
+                onRoutineClicked(name)
             },
         elevation = 10.dp
     ) {
