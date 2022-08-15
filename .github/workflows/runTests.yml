@@ -3,13 +3,14 @@
 # => https://docs.github.com/en/actions
 name: runTests
 
-# Controls when the action will run. Triggers the workflows on push or pull request
-# events but only for the master branch
 on:
   push:
     branches:
       - main
   pull_request:
+env:
+  # Increment this to manually invalidate the cache.
+  CACHE_VERSION: 1
 jobs:
   unit-tests:
     name: Unit tests
@@ -21,6 +22,15 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
+
+      - run: ./ci_clear_gradle_cache.sh
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ env.CACHE_VERSION }}-${{ hashFiles('**/**.gradle', '**/gradle/wrapper/gradel-wrapper.properties') }}
 
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
@@ -41,6 +51,15 @@ jobs:
           distribution: temurin
           java-version: 11
 
+      - run: ./ci_clear_gradle_cache.sh
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ env.CACHE_VERSION }}-${{ hashFiles('**/**.gradle', '**/gradle/wrapper/gradel-wrapper.properties') }}
+
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
@@ -54,7 +73,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-30
+          key: avd-${{ env.CACHE_VERSION }}-x86_64-30
 
       - name: Create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
