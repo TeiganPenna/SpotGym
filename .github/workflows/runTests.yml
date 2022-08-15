@@ -37,6 +37,11 @@ jobs:
         with:
           arguments: lint
 
+      - name: Execute Gradle 'ktlintCheck' task
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: ktlintCheck
+
       - name: Upload reports
         uses: actions/upload-artifact@v2
         with:

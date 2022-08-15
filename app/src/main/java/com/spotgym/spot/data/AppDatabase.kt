@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [(Routine::class)], version = 1)
-abstract class AppDatabase: RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
     abstract fun routineDao(): RoutineDao
 
     companion object {
@@ -20,7 +20,8 @@ abstract class AppDatabase: RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         AppDatabase::class.java,
-                        "routine_database")
+                        "routine_database"
+                    )
                         .fallbackToDestructiveMigration()
                         .build()
 
