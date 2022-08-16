@@ -1,7 +1,7 @@
 # .github/workflows/ci.yml
 # GitHub Actions documentation
 # => https://docs.github.com/en/actions
-name: runTests
+name: ci
 
 on:
   push:
