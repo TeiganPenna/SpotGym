@@ -88,6 +88,7 @@ jobs:
 
   instrumentation-tests:
     name: Instrumentation tests
+    if: ${{ false }} # disable for now
     runs-on: macos-latest # use macos to take advantage of haxm
     timeout-minutes: 30
     steps:
