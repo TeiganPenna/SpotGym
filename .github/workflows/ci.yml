@@ -182,7 +182,7 @@ jobs:
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         with:
-          arguments: app:bundleRelease
+          arguments: app:assembleRelease
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
