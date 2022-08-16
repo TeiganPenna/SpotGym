@@ -176,7 +176,7 @@ jobs:
             mkdir "${TMP_KEYSTORE_FILE_PATH}"
             echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/keystore.jks
 
-      - name: Setup and execute Gradle 'bundleRelease' task
+      - name: Setup and execute Gradle 'assembleRelease' task
         uses: gradle/gradle-build-action@v2
         env:
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
