@@ -168,23 +168,23 @@ jobs:
             ~/.gradle/wrapper
           key: gradle-${{ env.CACHE_VERSION }}-${{ hashFiles('**/**.gradle', '**/gradle/wrapper/gradel-wrapper.properties') }}
 
-      - name: Decode Keystore
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileName: 'keystore/keystore.jks'
-          encodedString: ${{ secrets.KEYSTORE }}
-
       - name: Setup and execute Gradle 'assembleRelease' task
         uses: gradle/gradle-build-action@v2
-        env:
-          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
         with:
           arguments: app:assembleRelease
+
+      - name: Sign APK
+        id: sign-apk
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNINGKEYBASE64 }}
+          alias: ${{ secrets.SIGNING_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Build-Artifacts
-          path: app/build/outputs
+          path: ${{ steps.sign-apk.outputs.signedReleaseFile }}
