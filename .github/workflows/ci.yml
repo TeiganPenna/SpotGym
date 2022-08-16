@@ -169,12 +169,10 @@ jobs:
           key: gradle-${{ env.CACHE_VERSION }}-${{ hashFiles('**/**.gradle', '**/gradle/wrapper/gradel-wrapper.properties') }}
 
       - name: Decode Keystore
-        env:
-          ENCODED_STRING: ${{ secrets.KEYSTORE }}
-        run: |
-            TMP_KEYSTORE_FILE_PATH="${RUNNER_TEMP}"/keystore
-            mkdir "${TMP_KEYSTORE_FILE_PATH}"
-            echo $ENCODED_STRING | base64 -di > "${TMP_KEYSTORE_FILE_PATH}"/keystore.jks
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: 'keystore/keystore.jks'
+          encodedString: ${{ secrets.KEYSTORE }}
 
       - name: Setup and execute Gradle 'assembleRelease' task
         uses: gradle/gradle-build-action@v2
