@@ -7,12 +7,13 @@ buildscript {
 
         // App dependencies
         activityComposeVersion = '1.5.1'
-        composeVersion = '1.2.0'
+        composeVersion = '1.2.1'
         coreTestingVersion = '2.1.0'
         esspressoVersion = '3.4.0'
         junitVersion = '4.13.2'
         ktxVersion = '1.8.0'
         lifecycleVersion = '2.5.1'
+        navigationComposeVersion = '2.5.1'
         roomVersion = '2.4.3'
         testExtJunit = '1.1.3'
     }
