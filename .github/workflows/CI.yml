@@ -1,7 +1,7 @@
-# .github/workflows/ci.yml
+# .github/workflows/CI.yml
 # GitHub Actions documentation
 # => https://docs.github.com/en/actions
-name: ci
+name: CI
 
 on:
   push:
