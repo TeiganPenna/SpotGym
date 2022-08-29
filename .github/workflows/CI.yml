@@ -168,7 +168,7 @@ jobs:
             buildSrc/src/main/java/AppVersion.kt
 
       - name: Fail if AppVersions hasn't changed
-        if: steps.changed-version-file.any_changed == 'false'
+        if: steps.changed-version-file.outputs.any_changed == 'false'
         run: |
           exit 1
 
