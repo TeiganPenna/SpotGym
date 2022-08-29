@@ -1,8 +1,12 @@
 package com.spotgym.spot.data
 
+import com.spotgym.spot.data.room.RoutineDao
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RoutineRepository(private val routineDao: RoutineDao) {
+@Singleton
+class RoutineRepository @Inject constructor(private val routineDao: RoutineDao) {
 
     val readAllData: Flow<List<Routine>> = routineDao.getAll()
 

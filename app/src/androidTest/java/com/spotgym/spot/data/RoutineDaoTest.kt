@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.spotgym.spot.data.room.RoutineDao
+import com.spotgym.spot.data.room.SpotDatabase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.equalTo
@@ -18,7 +20,7 @@ import org.junit.runner.RunWith
 class RoutineDaoTest {
 
     private lateinit var routineDao: RoutineDao
-    private lateinit var db: AppDatabase
+    private lateinit var db: SpotDatabase
 
     private val routine1 = Routine(1, "A")
     private val routine2 = Routine(2, "B")
@@ -32,7 +34,7 @@ class RoutineDaoTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         db = Room.inMemoryDatabaseBuilder(
             context,
-            AppDatabase::class.java
+            SpotDatabase::class.java
         )
             .allowMainThreadQueries()
             .build()

@@ -1,10 +1,11 @@
-package com.spotgym.spot.data
+package com.spotgym.spot.data.room
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.spotgym.spot.data.Routine
 import kotlinx.coroutines.flow.Flow
 
 @Dao
