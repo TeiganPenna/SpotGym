@@ -165,7 +165,7 @@ jobs:
         uses: tj-actions/changed-files@v29.0.2
         with:
           files: |
-            buildSrc/src/main/java/AppVersions.kt
+            buildSrc/src/main/java/AppVersion.kt
 
       - name: Fail if AppVersions hasn't changed
         if: steps.changed-version-file.any_changed == 'false'
