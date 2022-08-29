@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.spotgym.spot.ui.theme.SpotTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
