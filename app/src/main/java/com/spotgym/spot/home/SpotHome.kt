@@ -8,16 +8,21 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.spotgym.spot.R
 
 typealias OnRoutineClicked = (String) -> Unit
 
 @Composable
 fun SpotHome(
+    viewModel: MainViewModel,
     onRoutineClicked: OnRoutineClicked
 ) {
+    viewModel.setTitle(stringResource(R.string.routines_title))
+
     Column(modifier = Modifier.padding(10.dp)) {
         RoutineCard(
             name = "Day A",

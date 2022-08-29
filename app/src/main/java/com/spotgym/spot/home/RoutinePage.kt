@@ -13,8 +13,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun RoutinePage(
+    viewModel: MainViewModel,
     routineId: String
 ) {
+    viewModel.setTitle(routineId)
+
     when (routineId) {
         "Day A" -> {
             Column(modifier = Modifier.padding(10.dp)) {
