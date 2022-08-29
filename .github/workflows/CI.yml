@@ -36,16 +36,19 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: lint
+        if: always()
 
       - name: Execute Gradle 'ktlintCheck' task
         uses: gradle/gradle-build-action@v2
         with:
           arguments: ktlintCheck
+        if: always()
 
       - name: Execute Gradle 'detekt' task
         uses: gradle/gradle-build-action@v2
         with:
           arguments: detekt
+        if: always()
 
       - name: Upload reports
         uses: actions/upload-artifact@v2
