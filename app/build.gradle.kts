@@ -70,6 +70,7 @@ dependencies {
     // Compose
     implementation("androidx.activity:activity-compose:${Versions.ACTIVITY_COMPOSE}")
     implementation("androidx.navigation:navigation-compose:${Versions.NAVIGATION_COMPOSE}")
+    implementation("com.google.accompanist:accompanist-navigation-animation:${Versions.ANIMATED_NAVIGATION}")
     implementation("androidx.compose.ui:ui:${Versions.COMPOSE}")
     implementation("androidx.compose.material:material:${Versions.COMPOSE}")
     implementation("androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE}")

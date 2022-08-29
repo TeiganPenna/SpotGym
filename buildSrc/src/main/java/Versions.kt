@@ -6,6 +6,7 @@ object Versions {
 
     // App dependencies
     const val ACTIVITY_COMPOSE = "1.5.1"
+    const val ANIMATED_NAVIGATION = "0.25.1"
     const val COMPOSE = "1.2.1"
     const val CORE_TESTING = "2.1.0"
     const val ESPRESSO = "3.4.0"
