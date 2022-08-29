@@ -36,16 +36,19 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: lint
+        if: always()
 
       - name: Execute Gradle 'ktlintCheck' task
         uses: gradle/gradle-build-action@v2
         with:
           arguments: ktlintCheck
+        if: always()
 
       - name: Execute Gradle 'detekt' task
         uses: gradle/gradle-build-action@v2
         with:
           arguments: detekt
+        if: always()
 
       - name: Upload reports
         uses: actions/upload-artifact@v2
@@ -146,6 +149,28 @@ jobs:
           name: Instrumentation-Test-Reports
           path: app/build/reports
         if: failure()
+
+  check-version-bumped:
+    name: Check Android Version was increased
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # only runs on PRs
+
+      - name: Get changed version file
+        id: changed-version-file
+        uses: tj-actions/changed-files@v29.0.2
+        with:
+          files: |
+            buildSrc/src/main/java/AppVersion.kt
+
+      - name: Fail if AppVersions hasn't changed
+        if: steps.changed-version-file.outputs.any_changed == 'false'
+        run: |
+          exit 1
 
   build-and-sign:
     name: Build and Sign APK
