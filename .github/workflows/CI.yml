@@ -150,6 +150,28 @@ jobs:
           path: app/build/reports
         if: failure()
 
+  check-version-bumped:
+    name: Check Android Version was increased
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # only runs on PRs
+
+      - name: Get changed version file
+        id: changed-version-file
+        uses: tj-actions/changed-files@v29.0.2
+        with:
+          files: |
+            buildSrc/src/main/java/AppVersions.kt
+
+      - name: Fail if AppVersions hasn't changed
+        if: steps.changed-version-file.any_changed == 'false'
+        run: |
+          exit 1
+
   build-and-sign:
     name: Build and Sign APK
     runs-on: ubuntu-latest
