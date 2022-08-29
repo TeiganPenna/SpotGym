@@ -13,8 +13,8 @@ android {
         applicationId = "com.spotgym.spot"
         minSdk = Versions.MIN_SDK
         targetSdk = Versions.TARGET_SDK
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = AppVersion.Code
+        versionName = AppVersion.Name
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
