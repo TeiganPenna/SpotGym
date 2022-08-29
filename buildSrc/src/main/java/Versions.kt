@@ -10,6 +10,7 @@ object Versions {
     const val COMPOSE = "1.2.1"
     const val CORE_TESTING = "2.1.0"
     const val ESPRESSO = "3.4.0"
+    const val HILT = "2.43.2"
     const val JUNIT = "4.13.2"
     const val KTX = "1.8.0"
     const val LIFECYCLE = "2.5.1"

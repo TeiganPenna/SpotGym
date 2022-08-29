@@ -1,9 +1,10 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("org.jlleitschuh.gradle.ktlint")
+    id("dagger.hilt.android.plugin")
     id("io.gitlab.arturbosch.detekt")
+    kotlin("kapt")
+    id("org.jetbrains.kotlin.android")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 android {
@@ -66,6 +67,8 @@ dependencies {
     implementation("androidx.room:room-runtime:${Versions.ROOM}")
     implementation("androidx.room:room-ktx:${Versions.ROOM}")
     annotationProcessor("androidx.room:room-compiler:${Versions.ROOM}")
+    implementation("com.google.dagger:hilt-android:${Versions.HILT}")
+    kapt("com.google.dagger:hilt-android-compiler:${Versions.HILT}")
 
     // Compose
     implementation("androidx.activity:activity-compose:${Versions.ACTIVITY_COMPOSE}")
@@ -84,4 +87,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
     testImplementation("junit:junit:${Versions.JUNIT}")
+}
+
+kapt {
+    correctErrorTypes = true
 }
