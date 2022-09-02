@@ -11,5 +11,8 @@ data class Routine(
     val id: Int = 0,
 
     @ColumnInfo(name = "routineName")
-    val name: String
+    val name: String,
+
+    @ColumnInfo(name = "routineDescription")
+    val description: String,
 )

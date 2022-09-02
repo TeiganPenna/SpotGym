@@ -22,9 +22,9 @@ class RoutineDaoTest {
     private lateinit var routineDao: RoutineDao
     private lateinit var db: SpotDatabase
 
-    private val routine1 = Routine(1, "A")
-    private val routine2 = Routine(2, "B")
-    private val routine3 = Routine(3, "C")
+    private val routine1 = Routine(1, "A", "some description")
+    private val routine2 = Routine(2, "B", "some description")
+    private val routine3 = Routine(3, "C", "some description")
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -61,7 +61,7 @@ class RoutineDaoTest {
 
     @Test
     fun insertAndGetRoutine() = runBlocking {
-        val routine = Routine(4, "Dummy Routine")
+        val routine = Routine(4, "Dummy Routine", "some description")
         routineDao.insert(routine)
         val result = routineDao.getById(4)
         assertThat(result?.id, equalTo(4))
