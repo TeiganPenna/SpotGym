@@ -2,4 +2,9 @@
     <string name="app_name">Spot</string>
     <string name="routines_title">Routines</string>
     <string name="routines_add_description">Add routine</string>
+    <string name="routines_name_routine">Name Routine</string>
+    <string name="dialog_button_cancel">CANCEL</string>
+    <string name="dialog_button_ok">OK</string>
+    <string name="routine_field_name">Name</string>
+    <string name="routine_field_desc">Description</string>
 </resources>
