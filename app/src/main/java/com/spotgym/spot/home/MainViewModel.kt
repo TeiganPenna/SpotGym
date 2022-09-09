@@ -13,4 +13,13 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun getRoutines(): Flow<List<Routine>> = routineRepository.readAllData
+
+    suspend fun addRoutine() {
+        routineRepository.addRoutine(
+            Routine(
+                name = "Day A",
+                description = "Chest day: Bench press, Flies, and Dumbbell curls"
+            )
+        )
+    }
 }

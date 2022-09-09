@@ -21,6 +21,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
+import kotlinx.coroutines.launch
 
 typealias OnRoutineClicked = (String) -> Unit
 
@@ -36,9 +38,16 @@ fun SpotHome(
     viewModel: MainViewModel,
     onRoutineClicked: OnRoutineClicked,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val addRoutine: () -> Unit = {
+        coroutineScope.launch {
+            viewModel.addRoutine()
+        }
+    }
+
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
+            FloatingActionButton(onClick = { addRoutine() }) {
                 Icon(Icons.Filled.Add, stringResource(R.string.routines_add_description))
             }
         },
