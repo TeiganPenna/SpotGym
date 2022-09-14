@@ -27,12 +27,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
 
 @Composable
 fun ExercisesPage(
-    viewModel: MainViewModel,
+    viewModel: SpotHomeViewModel = hiltViewModel(),
     routineId: Int
 ) {
     val context = LocalContext.current
@@ -162,7 +163,7 @@ private fun ExerciseCard(
 
 private suspend fun getRoutine(
     context: Context,
-    viewModel: MainViewModel,
+    viewModel: SpotHomeViewModel,
     routineId: Int
 ): Routine {
     val routine = viewModel.getRoutine(routineId)

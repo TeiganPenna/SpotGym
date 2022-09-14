@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
 import kotlinx.coroutines.launch
@@ -42,7 +43,7 @@ typealias OnRoutineClicked = (Int) -> Unit
 @Composable
 @ExperimentalComposeUiApi
 fun SpotHome(
-    viewModel: MainViewModel,
+    viewModel: SpotHomeViewModel = hiltViewModel(),
     onRoutineClicked: OnRoutineClicked,
 ) {
     val coroutineScope = rememberCoroutineScope()

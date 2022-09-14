@@ -3,7 +3,6 @@ package com.spotgym.spot.home
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -18,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val mainViewModel: MainViewModel by viewModels()
 
     @ExperimentalAnimationApi
     @ExperimentalComposeUiApi
@@ -39,7 +37,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable(Routes.Home.route) {
                         SpotHome(
-                            viewModel = mainViewModel,
                             onRoutineClicked = { routineId ->
                                 navController.navigate(Routes.Routine.route + "/$routineId")
                             }
@@ -55,7 +52,6 @@ class MainActivity : ComponentActivity() {
                     ) { backStackEntry ->
                         val routineId = backStackEntry.arguments?.getInt("routineId")
                         ExercisesPage(
-                            viewModel = mainViewModel,
                             routineId = routineId!!
                         )
                     }

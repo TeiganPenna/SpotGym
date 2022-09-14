@@ -63,6 +63,7 @@ detekt {
 dependencies {
     kapt("androidx.room:room-compiler:${Versions.ROOM}")
     implementation("androidx.core:core-ktx:${Versions.KTX}")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${Versions.LIFECYCLE}")
     implementation("androidx.room:room-runtime:${Versions.ROOM}")
     implementation("androidx.room:room-ktx:${Versions.ROOM}")
