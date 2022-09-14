@@ -1,12 +1,10 @@
 package com.spotgym.spot.home
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -19,7 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -40,28 +37,23 @@ fun ExercisesPage(
         routine = viewModel.getRoutine(context, routineId)
     }
 
-    Scaffold(
-        scaffoldState = rememberScaffoldState(),
-        topBar = {
-            TopAppBar(
-                title = { Text(routine?.name ?: "") },
-            )
-        }
-    ) { contentPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-            color = MaterialTheme.colors.background
-        ) {
-            if (routine == null) {
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
+    if (routine == null) {
+        SpotLoadingPage()
+    } else {
+        Scaffold(
+            scaffoldState = rememberScaffoldState(),
+            topBar = {
+                TopAppBar(
+                    title = { Text(routine?.name ?: "") },
+                )
+            }
+        ) { contentPadding ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                color = MaterialTheme.colors.background
+            ) {
                 when (routine!!.name) {
                     "Day A" -> {
                         Column(modifier = Modifier.padding(10.dp)) {
