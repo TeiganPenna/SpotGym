@@ -33,7 +33,7 @@ import com.spotgym.spot.data.Routine
 
 @Composable
 fun ExercisesPage(
-    viewModel: SpotHomeViewModel = hiltViewModel(),
+    viewModel: ExercisesViewModel = hiltViewModel(),
     routineId: Int
 ) {
     val context = LocalContext.current
@@ -163,7 +163,7 @@ private fun ExerciseCard(
 
 private suspend fun getRoutine(
     context: Context,
-    viewModel: SpotHomeViewModel,
+    viewModel: ExercisesViewModel,
     routineId: Int
 ): Routine {
     val routine = viewModel.getRoutine(routineId)

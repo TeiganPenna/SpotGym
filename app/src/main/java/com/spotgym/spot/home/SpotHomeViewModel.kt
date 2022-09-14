@@ -28,8 +28,6 @@ class SpotHomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun getRoutine(id: Int): Routine? = routineRepository.getRoutine(id)
-
     suspend fun addRoutine(routine: Routine) {
         routineRepository.addRoutine(routine)
     }
