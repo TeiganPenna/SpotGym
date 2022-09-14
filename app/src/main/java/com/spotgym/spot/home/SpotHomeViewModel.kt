@@ -3,14 +3,12 @@ package com.spotgym.spot.home
 import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
 import com.spotgym.spot.data.RoutineRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,22 +16,16 @@ class SpotHomeViewModel @Inject constructor(
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private val _routines = MutableStateFlow(emptyList<Routine>())
-    val routines: StateFlow<List<Routine>> = _routines
+    private val _routines: MutableStateFlow<List<Routine>?> = MutableStateFlow(null)
+    val routines: StateFlow<List<Routine>?> = _routines
 
-    init {
-        refreshRoutines()
-    }
-
-    private fun refreshRoutines() {
-        viewModelScope.launch {
-            _routines.value = routineRepository.getAllRoutines()
-        }
+    suspend fun loadRoutines() {
+        _routines.value = routineRepository.getAllRoutines()
     }
 
     suspend fun addRoutine(routine: Routine) {
         routineRepository.addRoutine(routine)
-        refreshRoutines()
+        loadRoutines()
     }
 
     @SuppressWarnings("ReturnCount")

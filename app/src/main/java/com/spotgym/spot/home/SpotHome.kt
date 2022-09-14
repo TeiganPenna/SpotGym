@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -61,30 +62,38 @@ fun SpotHome(
         )
     }
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(onClick = { showAddDialog.value = true }) {
-                Icon(Icons.Filled.Add, stringResource(R.string.routines_add_description))
-            }
-        },
-        scaffoldState = rememberScaffoldState(),
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.routines_title)) },
-            )
-        }
-    ) { contentPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-            color = MaterialTheme.colors.background
-        ) {
-            val routines by viewModel.routines.collectAsState(initial = emptyList())
+    val routines by viewModel.routines.collectAsState()
 
-            LazyColumn(modifier = Modifier.padding(10.dp)) {
-                items(routines) { routine ->
-                    RoutineCard(routine, onRoutineClicked)
+    LaunchedEffect(Unit) {
+        viewModel.loadRoutines()
+    }
+
+    if (routines == null) {
+        SpotLoadingPage()
+    } else {
+        Scaffold(
+            floatingActionButton = {
+                FloatingActionButton(onClick = { showAddDialog.value = true }) {
+                    Icon(Icons.Filled.Add, stringResource(R.string.routines_add_description))
+                }
+            },
+            scaffoldState = rememberScaffoldState(),
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.routines_title)) },
+                )
+            }
+        ) { contentPadding ->
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                color = MaterialTheme.colors.background
+            ) {
+                LazyColumn(modifier = Modifier.padding(10.dp)) {
+                    items(routines!!) { routine ->
+                        RoutineCard(routine, onRoutineClicked)
+                    }
                 }
             }
         }
