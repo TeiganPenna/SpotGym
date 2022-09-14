@@ -115,13 +115,13 @@ private fun AddRoutineDialog(
         },
     ) {
         DialogValidationTextField(
-            label = stringResource(R.string.routine_field_name),
+            label = stringResource(R.string.routine_name),
             value = name,
             isError = nameIsError
         )
 
         DialogValidationTextField(
-            label = stringResource(R.string.routine_field_desc),
+            label = stringResource(R.string.routine_description),
             value = description,
             isError = descriptionIsError
         )
@@ -171,7 +171,7 @@ private fun validateRoutine(
         return ValidationResult(
             false,
             context.getString(
-                R.string.routine_validation_empty,
+                R.string.routines_validation_empty,
                 context.getString(R.string.routine_name)
             )
         )
@@ -183,7 +183,7 @@ private fun validateRoutine(
         return ValidationResult(
             false,
             context.getString(
-                R.string.routine_validation_empty,
+                R.string.routines_validation_empty,
                 context.getString(R.string.routine_description)
             )
         )

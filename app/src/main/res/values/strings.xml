@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Spot</string>
+
     <string name="routines_title">Routines</string>
     <string name="routines_add_description">Add routine</string>
     <string name="routines_name_routine">Name Routine</string>
-    <string name="routine_field_name">Name</string>
-    <string name="routine_field_desc">Description</string>
-    <string name="routine_validation_empty">%s cannot be empty</string>
+    <string name="routines_validation_empty">%s cannot be empty</string>
+
     <string name="routine_name">Name</string>
     <string name="routine_description">Description</string>
 </resources>

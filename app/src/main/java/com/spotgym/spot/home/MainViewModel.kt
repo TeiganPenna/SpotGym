@@ -15,7 +15,6 @@ class MainViewModel @Inject constructor(
     fun getRoutines(): Flow<List<Routine>> = routineRepository.readAllData
 
     suspend fun addRoutine(routine: Routine) {
-        // TODO validate routine name and description and throw?
         routineRepository.addRoutine(routine)
     }
 }
