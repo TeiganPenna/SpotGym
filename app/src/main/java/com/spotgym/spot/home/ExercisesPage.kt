@@ -1,7 +1,5 @@
 package com.spotgym.spot.home
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
 
 @Composable
@@ -40,7 +37,7 @@ fun ExercisesPage(
     var routine by remember { mutableStateOf<Routine?>(null) }
 
     LaunchedEffect(routineId) {
-        routine = getRoutine(context, viewModel, routineId)
+        routine = viewModel.getRoutine(context, routineId)
     }
 
     Scaffold(
@@ -159,17 +156,4 @@ private fun ExerciseCard(
             )
         }
     }
-}
-
-private suspend fun getRoutine(
-    context: Context,
-    viewModel: ExercisesViewModel,
-    routineId: Int
-): Routine {
-    val routine = viewModel.getRoutine(routineId)
-    if (routine == null) {
-        Toast.makeText(context, context.getString(R.string.exercises_error_findroutine), Toast.LENGTH_LONG).show()
-        return Routine.empty
-    }
-    return routine
 }

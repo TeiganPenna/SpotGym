@@ -1,6 +1,5 @@
 package com.spotgym.spot.home
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,13 +49,13 @@ fun SpotHome(
     val addRoutine: (Routine) -> Unit = {
         coroutineScope.launch {
             viewModel.addRoutine(it)
-            viewModel.refreshRoutines()
         }
     }
 
     val showAddDialog = remember { mutableStateOf(false) }
     if (showAddDialog.value) {
         AddRoutineDialog(
+            viewModel = viewModel,
             showDialog = showAddDialog,
             onPositiveClick = { addRoutine(it) }
         )
@@ -95,6 +94,7 @@ fun SpotHome(
 @Composable
 @ExperimentalComposeUiApi
 private fun AddRoutineDialog(
+    viewModel: SpotHomeViewModel,
     showDialog: MutableState<Boolean>,
     onPositiveClick: (Routine) -> Unit,
 ) {
@@ -109,7 +109,7 @@ private fun AddRoutineDialog(
     SpotDialog(
         title = stringResource(R.string.routines_name_routine),
         setShowDialog = { showDialog.value = it },
-        validate = { validateRoutine(context, name, nameIsError, description, descriptionIsError) },
+        validate = { viewModel.validateRoutine(context, name, nameIsError, description, descriptionIsError) },
         onPositiveClick = {
             val routine = Routine(name = name.value, description = description.value)
             onPositiveClick(routine)
@@ -157,39 +157,4 @@ private fun RoutineCard(
             )
         }
     }
-}
-
-@SuppressWarnings("ReturnCount")
-private fun validateRoutine(
-    context: Context,
-    name: MutableState<String>,
-    nameIsError: MutableState<Boolean>,
-    description: MutableState<String>,
-    descriptionIsError: MutableState<Boolean>,
-): ValidationResult {
-    if (name.value.isBlank()) {
-        nameIsError.value = true
-        return ValidationResult(
-            false,
-            context.getString(
-                R.string.routines_validation_empty,
-                context.getString(R.string.routine_name)
-            )
-        )
-    } else {
-        nameIsError.value = false
-    }
-    if (description.value.isBlank()) {
-        descriptionIsError.value = true
-        return ValidationResult(
-            false,
-            context.getString(
-                R.string.routines_validation_empty,
-                context.getString(R.string.routine_description)
-            )
-        )
-    } else {
-        descriptionIsError.value = false
-    }
-    return ValidationResult(true, null)
 }

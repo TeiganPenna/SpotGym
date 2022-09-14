@@ -1,7 +1,10 @@
 package com.spotgym.spot.home
 
+import android.content.Context
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
 import com.spotgym.spot.data.RoutineRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +25,7 @@ class SpotHomeViewModel @Inject constructor(
         refreshRoutines()
     }
 
-    fun refreshRoutines() {
+    private fun refreshRoutines() {
         viewModelScope.launch {
             _routines.value = routineRepository.getAllRoutines()
         }
@@ -30,5 +33,41 @@ class SpotHomeViewModel @Inject constructor(
 
     suspend fun addRoutine(routine: Routine) {
         routineRepository.addRoutine(routine)
+        refreshRoutines()
+    }
+
+    @SuppressWarnings("ReturnCount")
+    fun validateRoutine(
+        context: Context,
+        name: MutableState<String>,
+        nameIsError: MutableState<Boolean>,
+        description: MutableState<String>,
+        descriptionIsError: MutableState<Boolean>,
+    ): ValidationResult {
+        if (name.value.isBlank()) {
+            nameIsError.value = true
+            return ValidationResult(
+                false,
+                context.getString(
+                    R.string.routines_validation_empty,
+                    context.getString(R.string.routine_name)
+                )
+            )
+        } else {
+            nameIsError.value = false
+        }
+        if (description.value.isBlank()) {
+            descriptionIsError.value = true
+            return ValidationResult(
+                false,
+                context.getString(
+                    R.string.routines_validation_empty,
+                    context.getString(R.string.routine_description)
+                )
+            )
+        } else {
+            descriptionIsError.value = false
+        }
+        return ValidationResult(true, null)
     }
 }
