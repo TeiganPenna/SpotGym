@@ -8,4 +8,6 @@
 
     <string name="routine_name">Name</string>
     <string name="routine_description">Description</string>
+
+    <string name="exercises_error_findroutine">Unable to find routine</string>
 </resources>
