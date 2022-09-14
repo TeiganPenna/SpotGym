@@ -6,16 +6,15 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.spotgym.spot.data.Routine
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RoutineDao {
 
     @Query("select * from routines")
-    fun getAll(): Flow<List<Routine>>
+    suspend fun getAll(): List<Routine>
 
     @Query("select * from routines where id = :id")
-    fun getById(id: Int): Routine?
+    suspend fun getById(id: Int): Routine?
 
     @Insert
     suspend fun insert(routine: Routine)

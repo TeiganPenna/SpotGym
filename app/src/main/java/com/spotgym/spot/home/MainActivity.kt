@@ -8,6 +8,8 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -43,9 +45,19 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-                    composable(Routes.Routine.route + "/{routineId}") { backStackEntry ->
-                        val routineId = backStackEntry.arguments?.getString("routineId")
-                        RoutinePage(routineId!!)
+                    composable(
+                        route = Routes.Routine.route + "/{routineId}",
+                        arguments = listOf(
+                            navArgument("routineId") {
+                                type = NavType.IntType
+                            },
+                        )
+                    ) { backStackEntry ->
+                        val routineId = backStackEntry.arguments?.getInt("routineId")
+                        ExercisesPage(
+                            viewModel = mainViewModel,
+                            routineId = routineId!!
+                        )
                     }
                 }
             }

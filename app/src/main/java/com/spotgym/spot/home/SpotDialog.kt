@@ -64,16 +64,17 @@ fun SpotDialog(
                 }
 
                 DialogResultButtons(
-                    onNegativeClick = { setShowDialog(false) }
-                ) {
-                    val result = validate()
-                    if (result.isSuccess) {
-                        onPositiveClick()
-                        setShowDialog(false)
-                    } else {
-                        errorField = result.message ?: ""
+                    onNegativeClick = { setShowDialog(false) },
+                    onPositiveClick = {
+                        val result = validate()
+                        if (result.isSuccess) {
+                            onPositiveClick()
+                            setShowDialog(false)
+                        } else {
+                            errorField = result.message ?: ""
+                        }
                     }
-                }
+                )
             }
         }
     }

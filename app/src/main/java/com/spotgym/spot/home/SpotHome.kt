@@ -37,7 +37,7 @@ import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
 import kotlinx.coroutines.launch
 
-typealias OnRoutineClicked = (String) -> Unit
+typealias OnRoutineClicked = (Int) -> Unit
 
 @Composable
 @ExperimentalComposeUiApi
@@ -49,6 +49,7 @@ fun SpotHome(
     val addRoutine: (Routine) -> Unit = {
         coroutineScope.launch {
             viewModel.addRoutine(it)
+            viewModel.refreshRoutines()
         }
     }
 
@@ -79,8 +80,7 @@ fun SpotHome(
                 .padding(contentPadding),
             color = MaterialTheme.colors.background
         ) {
-
-            val routines by viewModel.getRoutines().collectAsState(initial = emptyList())
+            val routines by viewModel.routines.collectAsState(initial = emptyList())
 
             LazyColumn(modifier = Modifier.padding(10.dp)) {
                 items(routines) { routine ->
@@ -138,7 +138,7 @@ private fun RoutineCard(
             .fillMaxWidth()
             .padding(5.dp)
             .clickable {
-                onRoutineClicked(routine.name) // TODO use id
+                onRoutineClicked(routine.id)
             },
         elevation = 10.dp
     ) {
