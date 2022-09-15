@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.spotgym.spot.data.Routine
+import com.spotgym.spot.data.RoutineWithExercises
 
 @Composable
 fun ExercisesPage(
@@ -31,20 +31,20 @@ fun ExercisesPage(
     routineId: Int
 ) {
     val context = LocalContext.current
-    var routine by remember { mutableStateOf<Routine?>(null) }
+    var model by remember { mutableStateOf<RoutineWithExercises?>(null) }
 
     LaunchedEffect(routineId) {
-        routine = viewModel.getRoutine(context, routineId)
+        model = viewModel.getRoutineWithExercises(context, routineId)
     }
 
-    if (routine == null) {
+    if (model == null) {
         SpotLoadingPage()
     } else {
         Scaffold(
             scaffoldState = rememberScaffoldState(),
             topBar = {
                 TopAppBar(
-                    title = { Text(routine?.name ?: "") },
+                    title = { Text(model?.routine?.name ?: "") },
                 )
             }
         ) { contentPadding ->
@@ -54,7 +54,7 @@ fun ExercisesPage(
                     .padding(contentPadding),
                 color = MaterialTheme.colors.background
             ) {
-                when (routine!!.name) {
+                when (model!!.routine.name) {
                     "Day A" -> {
                         Column(modifier = Modifier.padding(10.dp)) {
                             ExerciseCard(name = "Bench Press", description = "3 sets of 5 reps")

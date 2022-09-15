@@ -26,5 +26,9 @@ object SpotModule {
 
     @Singleton
     @Provides
+    fun provideExerciseDao(db: SpotDatabase) = db.exerciseDao()
+
+    @Singleton
+    @Provides
     fun provideRoutineDao(db: SpotDatabase) = db.routineDao()
 }
