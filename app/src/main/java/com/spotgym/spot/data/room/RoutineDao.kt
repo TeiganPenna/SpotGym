@@ -10,6 +10,6 @@ interface RoutineDao : DataDao<Routine> {
     @Query("select * from routines")
     suspend fun getAll(): List<Routine>
 
-    @Query("select * from routines where id = :id")
+    @Query("select * from routines where id = :id LIMIT 1")
     suspend fun getById(id: Int): Routine?
 }
