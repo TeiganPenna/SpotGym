@@ -25,7 +25,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
-import kotlinx.coroutines.launch
 
 typealias OnRoutineClicked = (Int) -> Unit
 
@@ -46,22 +44,6 @@ fun SpotHome(
     viewModel: SpotHomeViewModel = hiltViewModel(),
     onRoutineClicked: OnRoutineClicked,
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val addRoutine: (Routine) -> Unit = {
-        coroutineScope.launch {
-            viewModel.addRoutine(it)
-        }
-    }
-
-    val showAddDialog = remember { mutableStateOf(false) }
-    if (showAddDialog.value) {
-        AddRoutineDialog(
-            viewModel = viewModel,
-            showDialog = showAddDialog,
-            onPositiveClick = { addRoutine(it) }
-        )
-    }
-
     val routines by viewModel.routines.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -71,6 +53,14 @@ fun SpotHome(
     if (routines == null) {
         SpotLoadingPage()
     } else {
+        val showAddDialog = remember { mutableStateOf(false) }
+        if (showAddDialog.value) {
+            AddRoutineDialog(
+                viewModel = viewModel,
+                showDialog = showAddDialog,
+            )
+        }
+
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = { showAddDialog.value = true }) {
@@ -105,7 +95,6 @@ fun SpotHome(
 private fun AddRoutineDialog(
     viewModel: SpotHomeViewModel,
     showDialog: MutableState<Boolean>,
-    onPositiveClick: (Routine) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -121,7 +110,7 @@ private fun AddRoutineDialog(
         validate = { viewModel.validateRoutine(context, name, nameIsError, description, descriptionIsError) },
         onPositiveClick = {
             val routine = Routine(name = name.value, description = description.value)
-            onPositiveClick(routine)
+            viewModel.addRoutine(routine)
         },
     ) {
         DialogValidationTextField(

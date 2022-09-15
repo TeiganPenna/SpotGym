@@ -4,10 +4,16 @@
     <string name="routines_title">Routines</string>
     <string name="routines_add_description">Add routine</string>
     <string name="routines_name_routine">Name Routine</string>
-    <string name="routines_validation_empty">%s cannot be empty</string>
 
     <string name="routine_name">Name</string>
     <string name="routine_description">Description</string>
 
     <string name="exercises_error_findroutine">Unable to find routine</string>
+    <string name="exercises_add_description">Add Exercise</string>
+    <string name="exercises_name_exercise">Name Exercise</string>
+
+    <string name="exercise_description">Description</string>
+    <string name="exercise_name">Name</string>
+
+    <string name="validation_value_empty">%s cannot be empty</string>
 </resources>

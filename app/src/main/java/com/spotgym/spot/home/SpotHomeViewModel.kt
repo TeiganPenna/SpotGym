@@ -3,12 +3,14 @@ package com.spotgym.spot.home
 import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.spotgym.spot.R
 import com.spotgym.spot.data.Routine
 import com.spotgym.spot.data.RoutineRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,9 +25,11 @@ class SpotHomeViewModel @Inject constructor(
         _routines.value = routineRepository.getAllRoutines()
     }
 
-    suspend fun addRoutine(routine: Routine) {
-        routineRepository.addRoutine(routine)
-        loadRoutines()
+    fun addRoutine(routine: Routine) {
+        viewModelScope.launch {
+            routineRepository.addRoutine(routine)
+            loadRoutines()
+        }
     }
 
     @SuppressWarnings("ReturnCount")
@@ -41,7 +45,7 @@ class SpotHomeViewModel @Inject constructor(
             return ValidationResult(
                 false,
                 context.getString(
-                    R.string.routines_validation_empty,
+                    R.string.validation_value_empty,
                     context.getString(R.string.routine_name)
                 )
             )
@@ -53,7 +57,7 @@ class SpotHomeViewModel @Inject constructor(
             return ValidationResult(
                 false,
                 context.getString(
-                    R.string.routines_validation_empty,
+                    R.string.validation_value_empty,
                     context.getString(R.string.routine_description)
                 )
             )

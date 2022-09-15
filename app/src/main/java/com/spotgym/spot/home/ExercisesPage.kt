@@ -4,47 +4,71 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.spotgym.spot.data.RoutineWithExercises
+import com.spotgym.spot.R
+import com.spotgym.spot.data.Exercise
 
 @Composable
+@ExperimentalComposeUiApi
 fun ExercisesPage(
     viewModel: ExercisesViewModel = hiltViewModel(),
     routineId: Int
 ) {
     val context = LocalContext.current
-    var model by remember { mutableStateOf<RoutineWithExercises?>(null) }
 
     LaunchedEffect(routineId) {
-        model = viewModel.getRoutineWithExercises(context, routineId)
+        viewModel.loadRoutineData(context, routineId)
     }
 
-    if (model == null) {
+    if (viewModel.routineData == null) {
         SpotLoadingPage()
     } else {
+        val routine = viewModel.routineData!!.routine
+
+        val showAddDialog = remember { mutableStateOf(false) }
+        if (showAddDialog.value) {
+            AddExerciseDialog(
+                viewModel = viewModel,
+                routine.id,
+                showDialog = showAddDialog,
+            )
+        }
+
         Scaffold(
+            floatingActionButton = {
+                FloatingActionButton(onClick = { showAddDialog.value = true }) {
+                    Icon(Icons.Filled.Add, stringResource(R.string.exercises_add_description))
+                }
+            },
             scaffoldState = rememberScaffoldState(),
             topBar = {
                 TopAppBar(
-                    title = { Text(model?.routine?.name ?: "") },
+                    title = { Text(routine.name) },
                 )
             }
         ) { contentPadding ->
@@ -54,72 +78,56 @@ fun ExercisesPage(
                     .padding(contentPadding),
                 color = MaterialTheme.colors.background
             ) {
-                when (model!!.routine.name) {
-                    "Day A" -> {
-                        Column(modifier = Modifier.padding(10.dp)) {
-                            ExerciseCard(name = "Bench Press", description = "3 sets of 5 reps")
-                            ExerciseCard(name = "Paused Bench Press", description = "4 sets of 3 reps")
-                            ExerciseCard(
-                                name = "Incline Dumbbell Press",
-                                description = "3 sets of 8-12 reps"
-                            )
-                            ExerciseCard(
-                                name = "Chest Cable Flies",
-                                description = "4 sets of 8-12 reps"
-                            )
-                            ExerciseCard(name = "Dumbbell Curls", description = "4 sets of 8-12 reps")
-                            ExerciseCard(name = "Hammer Curls", description = "4 sets of 8-12 reps")
-                        }
-                    }
-                    "Day B" -> {
-                        Column(modifier = Modifier.padding(10.dp)) {
-                            ExerciseCard(name = "Deadlifts", description = "3 sets of 5 reps")
-                            ExerciseCard(name = "Chin Ups", description = "3 sets of 8-12 reps")
-                            ExerciseCard(name = "Cable Rows", description = "3 sets of 8-12 reps")
-                            ExerciseCard(name = "Dumbbell Rows", description = "2 sets of 15 reps")
-                            ExerciseCard(name = "Dips", description = "3 sets of 8-12 reps")
-                            ExerciseCard(name = "Leg Press", description = "3 sets of 8-12 reps")
-                            ExerciseCard(name = "Calf Raises", description = "3 sets of 15 reps")
-                        }
-                    }
-                    "Day C" -> {
-                        Column(modifier = Modifier.padding(10.dp)) {
-                            ExerciseCard(name = "Bench Press", description = "5 sets of 5 reps")
-                            ExerciseCard(
-                                name = "Overhead Barbell Press",
-                                description = "3 sets of 8-12 reps"
-                            )
-                            ExerciseCard(
-                                name = "Tricep Extensions",
-                                description = "3 sets of 8-12 reps"
-                            )
-                            ExerciseCard(
-                                name = "Overhead Dumbbell Press",
-                                description = "3 sets of 8-12 reps"
-                            )
-                            ExerciseCard(
-                                name = "Overhead Dumbbell Extensions",
-                                description = "3 sets of 8-12 reps"
-                            )
-                            ExerciseCard(
-                                name = "Dumbbell Shoulder Flies",
-                                description = "3 sets of 20 reps, alternating side and front"
-                            )
-                        }
-                    }
-                    "Day D" -> {
-                        Column(modifier = Modifier.padding(10.dp)) {
-                            ExerciseCard(name = "Squats", description = "5 sets of 5 reps")
-                            ExerciseCard(name = "Deadlifts", description = "3 sets of 8-12 reps")
-                            ExerciseCard(name = "Leg Press", description = "3 sets of 8-12 reps")
-                            ExerciseCard(name = "Calf Raises", description = "3 sets of 15 reps")
-                            ExerciseCard(name = "Hamstring Curls", description = "3 sets of 8-12 reps")
-                            ExerciseCard(name = "Dumbbell Curls", description = "3 sets of 8-12 reps")
-                        }
+                LazyColumn(modifier = Modifier.padding(10.dp)) {
+                    val exercises = viewModel.routineData!!.exercises
+
+                    items(exercises) { exercise ->
+                        ExerciseCard(
+                            name = exercise.name,
+                            description = exercise.description
+                        )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+@ExperimentalComposeUiApi
+private fun AddExerciseDialog(
+    viewModel: ExercisesViewModel,
+    routineId: Int,
+    showDialog: MutableState<Boolean>,
+) {
+    val context = LocalContext.current
+
+    val name = remember { mutableStateOf("") }
+    val nameIsError = remember { mutableStateOf(false) }
+
+    val description = remember { mutableStateOf("") }
+    val descriptionIsError = remember { mutableStateOf(false) }
+
+    SpotDialog(
+        title = stringResource(R.string.exercises_name_exercise),
+        setShowDialog = { showDialog.value = it },
+        validate = { viewModel.validateExercise(context, name, nameIsError, description, descriptionIsError) },
+        onPositiveClick = {
+            val exercise = Exercise(name = name.value, description = description.value, routineId = routineId)
+            viewModel.addExercise(context, routineId, exercise)
+        },
+    ) {
+        DialogValidationTextField(
+            label = stringResource(R.string.exercise_name),
+            value = name,
+            isError = nameIsError
+        )
+
+        DialogValidationTextField(
+            label = stringResource(R.string.exercise_description),
+            value = description,
+            isError = descriptionIsError
+        )
     }
 }
 
