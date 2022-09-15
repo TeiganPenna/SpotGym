@@ -17,11 +17,10 @@ class ExercisesViewModel @Inject constructor(
     suspend fun getRoutine(
         context: Context,
         routineId: Int
-    ): Routine {
+    ): Routine? {
         val routine = routineRepository.getRoutine(routineId)
         if (routine == null) {
             Toast.makeText(context, context.getString(R.string.exercises_error_findroutine), Toast.LENGTH_LONG).show()
-            return Routine.empty
         }
         return routine
     }

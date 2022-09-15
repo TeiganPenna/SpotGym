@@ -15,8 +15,4 @@ data class Routine(
 
     @ColumnInfo(name = "routineDescription")
     val description: String,
-) {
-    companion object {
-        val empty = Routine(name = "", description = "")
-    }
-}
+)
