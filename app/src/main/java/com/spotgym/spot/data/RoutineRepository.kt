@@ -4,22 +4,31 @@ import com.spotgym.spot.data.room.RoutineDao
 import javax.inject.Inject
 import javax.inject.Singleton
 
+interface RoutineRepository {
+    suspend fun getAllRoutines(): List<Routine>
+    suspend fun getRoutine(id: Int): Routine?
+    suspend fun addRoutine(routine: Routine)
+    suspend fun updateRoutine(routine: Routine)
+    suspend fun deleteRoutine(routine: Routine)
+}
+
 @Singleton
-class RoutineRepository @Inject constructor(private val routineDao: RoutineDao) {
+class RoutineRepositoryImpl
+@Inject constructor(private val routineDao: RoutineDao) : RoutineRepository {
 
-    suspend fun getAllRoutines(): List<Routine> = routineDao.getAll()
+    override suspend fun getAllRoutines(): List<Routine> = routineDao.getAll()
 
-    suspend fun getRoutine(id: Int): Routine? = routineDao.getById(id)
+    override suspend fun getRoutine(id: Int): Routine? = routineDao.getById(id)
 
-    suspend fun addRoutine(routine: Routine) {
+    override suspend fun addRoutine(routine: Routine) {
         routineDao.insert(routine)
     }
 
-    suspend fun updateRoutine(routine: Routine) {
+    override suspend fun updateRoutine(routine: Routine) {
         routineDao.update(routine)
     }
 
-    suspend fun deleteRoutine(routine: Routine) {
+    override suspend fun deleteRoutine(routine: Routine) {
         routineDao.delete(routine)
     }
 }
