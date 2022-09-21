@@ -12,13 +12,15 @@ import com.spotgym.spot.R
 import com.spotgym.spot.data.Exercise
 import com.spotgym.spot.data.ExerciseRepository
 import com.spotgym.spot.data.RoutineWithExercises
+import com.spotgym.spot.ui.service.ToastService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ExercisesViewModel @Inject constructor(
-    private val exerciseRepository: ExerciseRepository
+    private val exerciseRepository: ExerciseRepository,
+    private val toastService: ToastService,
 ) : ViewModel() {
 
     var routineData by mutableStateOf<RoutineWithExercises?>(null)
@@ -30,7 +32,7 @@ class ExercisesViewModel @Inject constructor(
     ) {
         val data = exerciseRepository.getRoutineWithExercises(routineId)
         if (data == null) {
-            Toast.makeText(context, context.getString(R.string.exercises_error_findroutine), Toast.LENGTH_LONG).show()
+            toastService.showText(context, context.getString(R.string.exercises_error_findroutine), Toast.LENGTH_LONG)
         }
         routineData = data
     }
@@ -62,7 +64,7 @@ class ExercisesViewModel @Inject constructor(
                     R.string.validation_value_empty,
                     context.getString(R.string.exercise_name)
                 )
-            )
+            ) // TODO do I need to set descriptionIsError.value = false here?
         } else {
             nameIsError.value = false
         }

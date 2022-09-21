@@ -90,6 +90,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
     testImplementation("junit:junit:${Versions.JUNIT}")
     testImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.KOTLINX_COROUTINES}")
     testImplementation("org.mockito.kotlin:mockito-kotlin:${Versions.MOCKITO}")
 }
 

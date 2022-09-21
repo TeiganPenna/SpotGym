@@ -2,7 +2,14 @@ package com.spotgym.spot.di
 
 import android.content.Context
 import androidx.room.Room
+import com.spotgym.spot.data.ExerciseRepository
+import com.spotgym.spot.data.ExerciseRepositoryImpl
+import com.spotgym.spot.data.RoutineRepository
+import com.spotgym.spot.data.RoutineRepositoryImpl
 import com.spotgym.spot.data.room.SpotDatabase
+import com.spotgym.spot.ui.service.ToastService
+import com.spotgym.spot.ui.service.ToastServiceImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,23 +19,39 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SingletonModule {
+@SuppressWarnings("UnnecessaryAbstractClass")
+abstract class SingletonModule {
 
     @Singleton
-    @Provides
-    fun provideSpotDatabase(
-        @ApplicationContext context: Context
-    ) = Room.databaseBuilder(
-        context,
-        SpotDatabase::class.java,
-        "spot_database"
-    ).fallbackToDestructiveMigration().build()
+    @Binds
+    abstract fun bindExerciseRepository(exerciseRepositoryImpl: ExerciseRepositoryImpl): ExerciseRepository
 
     @Singleton
-    @Provides
-    fun provideExerciseDao(db: SpotDatabase) = db.exerciseDao()
+    @Binds
+    abstract fun bindRoutineRepository(routineRepositoryImpl: RoutineRepositoryImpl): RoutineRepository
 
-    @Singleton
-    @Provides
-    fun provideRoutineDao(db: SpotDatabase) = db.routineDao()
+    companion object {
+
+        @Singleton
+        @Provides
+        fun provideSpotDatabase(
+            @ApplicationContext context: Context
+        ) = Room.databaseBuilder(
+            context,
+            SpotDatabase::class.java,
+            "spot_database"
+        ).fallbackToDestructiveMigration().build()
+
+        @Singleton
+        @Provides
+        fun provideExerciseDao(db: SpotDatabase) = db.exerciseDao()
+
+        @Singleton
+        @Provides
+        fun provideRoutineDao(db: SpotDatabase) = db.routineDao()
+
+        @Singleton
+        @Provides
+        fun provideToastService(): ToastService = ToastServiceImpl()
+    }
 }
