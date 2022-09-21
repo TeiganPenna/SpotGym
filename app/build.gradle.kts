@@ -85,9 +85,12 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.ESPRESSO}")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}")
+    androidTestImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
     debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
     testImplementation("junit:junit:${Versions.JUNIT}")
+    testImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:${Versions.MOCKITO}")
 }
 
 kapt {

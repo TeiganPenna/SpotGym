@@ -6,10 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.spotgym.spot.data.room.RoutineDao
 import com.spotgym.spot.data.room.SpotDatabase
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.MatcherAssert.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,19 +49,19 @@ class RoutineDaoTest {
     }
 
     @Test
-    fun getRoutines() = runBlocking {
-        val routineList = routineDao.getAll().first()
+    fun getRoutines(): Unit = runBlocking {
+        val routineList = routineDao.getAll()
 
-        assertThat(routineList[0], equalTo(routine1))
-        assertThat(routineList[1], equalTo(routine2))
-        assertThat(routineList[2], equalTo(routine3))
+        assertThat(routineList[0]).isEqualTo(routine1)
+        assertThat(routineList[1]).isEqualTo(routine2)
+        assertThat(routineList[2]).isEqualTo(routine3)
     }
 
     @Test
-    fun insertAndGetRoutine() = runBlocking {
+    fun insertAndGetRoutine(): Unit = runBlocking {
         val routine = Routine(4, "Dummy Routine", "some description")
         routineDao.insert(routine)
         val result = routineDao.getById(4)
-        assertThat(result?.id, equalTo(4))
+        assertThat(result?.id).isEqualTo(4)
     }
 }
