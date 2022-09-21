@@ -42,6 +42,7 @@ class SpotHomeViewModel @Inject constructor(
     ): ValidationResult {
         if (name.value.isBlank()) {
             nameIsError.value = true
+            descriptionIsError.value = false // reset so only one field has an error at a time
             return ValidationResult(
                 false,
                 context.getString(
