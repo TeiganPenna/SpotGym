@@ -198,6 +198,24 @@ class ExercisesViewModelTest {
         assertThat(descriptionIsError.value).isFalse
     }
 
+    @Test
+    fun `validateExercise resets descriptionIsError when name is empty`() = runTest {
+        val nameIsError = mutableStateOf(false)
+        val descriptionIsError = mutableStateOf(true)
+        val result = viewModel.validateExercise(
+            context,
+            mutableStateOf(""),
+            nameIsError,
+            mutableStateOf(""),
+            descriptionIsError,
+        )
+
+        assertThat(result.isSuccess).isFalse
+        assertThat(result.message).isEqualTo("some error message name")
+        assertThat(nameIsError.value).isTrue
+        assertThat(descriptionIsError.value).isFalse
+    }
+
     companion object {
         const val TEST_ROUTINE_ID = 0
     }
