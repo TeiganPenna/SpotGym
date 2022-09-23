@@ -62,7 +62,7 @@ fun ExercisesPage(
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = { showAddDialog.value = true }) {
-                    Icon(Icons.Filled.Add, stringResource(R.string.exercises_add_description))
+                    Icon(Icons.Filled.Add, stringResource(R.string.exercises_add_exercise_description))
                 }
             },
             scaffoldState = rememberScaffoldState(),
@@ -109,7 +109,7 @@ private fun AddExerciseDialog(
     val descriptionIsError = remember { mutableStateOf(false) }
 
     SpotDialog(
-        title = stringResource(R.string.exercises_name_exercise),
+        title = stringResource(R.string.exercises_add_exercise),
         setShowDialog = { showDialog.value = it },
         validate = {
             val result = viewModel.validateExercise(context, name.value, description.value)

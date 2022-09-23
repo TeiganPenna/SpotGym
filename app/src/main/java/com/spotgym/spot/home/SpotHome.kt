@@ -64,7 +64,7 @@ fun SpotHome(
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = { showAddDialog.value = true }) {
-                    Icon(Icons.Filled.Add, stringResource(R.string.routines_add_description))
+                    Icon(Icons.Filled.Add, stringResource(R.string.routines_add_routine_description))
                 }
             },
             scaffoldState = rememberScaffoldState(),
@@ -105,7 +105,7 @@ private fun AddRoutineDialog(
     val descriptionIsError = remember { mutableStateOf(false) }
 
     SpotDialog(
-        title = stringResource(R.string.routines_name_routine),
+        title = stringResource(R.string.routines_add_routine),
         setShowDialog = { showDialog.value = it },
         validate = {
             val result = viewModel.validateRoutine(context, name.value, description.value)
