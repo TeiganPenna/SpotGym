@@ -88,10 +88,15 @@ dependencies {
     androidTestImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
     debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
-    testImplementation("junit:junit:${Versions.JUNIT}")
+    testImplementation("io.mockk:mockk:${Versions.MOCKK}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT_JUPITER}")
     testImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.KOTLINX_COROUTINES}")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:${Versions.MOCKITO}")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 kapt {

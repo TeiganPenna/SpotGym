@@ -19,8 +19,8 @@ object Versions {
     const val ASSERTJ = "3.23.1"
     const val CORE_TESTING = "2.1.0"
     const val ESPRESSO = "3.4.0"
-    const val JUNIT = "4.13.2"
+    const val JUNIT_JUPITER = "5.9.1"
     const val KOTLINX_COROUTINES = "1.6.4"
-    const val MOCKITO = "4.0.0"
+    const val MOCKK = "1.12.8"
     const val TEST_EXT_JUNIT = "1.1.3"
 }

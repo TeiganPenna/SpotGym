@@ -4,40 +4,41 @@ import android.content.Context
 import com.spotgym.spot.data.Routine
 import com.spotgym.spot.data.RoutineRepository
 import com.spotgym.spot.home.SpotHomeViewModel
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockKExtension::class, MainCoroutineExtension::class)
 @ExperimentalCoroutinesApi
 class SpotHomeViewModelTest {
 
     private lateinit var viewModel: SpotHomeViewModel
 
-    @Mock
+    @MockK
     private lateinit var context: Context
-    @Mock
+    @MockK
     private lateinit var repositoryMock: RoutineRepository
 
-    @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
+    @BeforeEach
+    fun beforeEach() {
+        every { context.getString(R.string.routine_name) } returns "name"
+        every { context.getString(R.string.routine_description) } returns "description"
 
-    @Before
-    fun before() {
-        whenever(context.getString(R.string.routine_name)).thenReturn("name")
-        whenever(context.getString(R.string.routine_description)).thenReturn("description")
-        whenever(context.getString(eq(R.string.validation_value_empty), any())).then {
-            "some error message " + it.arguments[1]
+        val captured = mutableListOf<Any?>()
+        every {
+            context.getString(eq(R.string.validation_value_empty), *varargAllNullable { captured.add(it) })
+        } answers {
+            val secondArg = captured[0] as String
+            captured.clear()
+            "some error message $secondArg"
         }
 
         viewModel = SpotHomeViewModel(repositoryMock)
@@ -55,7 +56,7 @@ class SpotHomeViewModelTest {
             Routine(name = "Routine 2", description = "Description 2"),
             Routine(name = "Routine 3", description = "Description 3"),
         )
-        whenever(repositoryMock.getAllRoutines()).thenReturn(routines)
+        coEvery { repositoryMock.getAllRoutines() } returns routines
 
         viewModel.loadRoutines()
 
@@ -70,9 +71,9 @@ class SpotHomeViewModelTest {
     @Test
     fun `addRoutine adds to repository and reloads`() = runTest {
         val routines = mutableListOf<Routine>()
-        whenever(repositoryMock.getAllRoutines()).thenReturn(routines)
-        whenever(repositoryMock.addRoutine(any())).then {
-            routines.add(it.arguments[0] as Routine)
+        coEvery { repositoryMock.getAllRoutines() } returns routines
+        coEvery { repositoryMock.addRoutine(any()) } answers {
+            routines.add(firstArg())
         }
 
         viewModel.loadRoutines()
@@ -83,7 +84,7 @@ class SpotHomeViewModelTest {
         val routine = Routine(name = "Some Routine", description = "some description")
         viewModel.addRoutine(routine)
 
-        verify(repositoryMock).addRoutine(routine)
+        coVerify { repositoryMock.addRoutine(routine) }
 
         assertThat(loadedRoutines).hasSize(1)
         assertThat(loadedRoutines!![0]).isEqualTo(routine)

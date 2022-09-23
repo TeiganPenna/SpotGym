@@ -8,43 +8,46 @@ import com.spotgym.spot.data.Routine
 import com.spotgym.spot.data.RoutineWithExercises
 import com.spotgym.spot.home.ExercisesViewModel
 import com.spotgym.spot.ui.service.ToastService
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockKExtension::class, MainCoroutineExtension::class)
 @ExperimentalCoroutinesApi
 class ExercisesViewModelTest {
 
     private lateinit var viewModel: ExercisesViewModel
 
-    @Mock
+    @MockK
     private lateinit var context: Context
-    @Mock
+    @MockK
     private lateinit var repositoryMock: ExerciseRepository
-    @Mock
+    @MockK
     private lateinit var toastServiceMock: ToastService
 
-    @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
+    @BeforeEach
+    fun beforeEach() {
+        every { context.getString(R.string.exercises_error_findroutine) } returns "some error message"
+        every { context.getString(R.string.exercise_name) } returns "name"
+        every { context.getString(R.string.exercise_description) } returns "description"
 
-    @Before
-    fun before() {
-        whenever(context.getString(R.string.exercises_error_findroutine)).thenReturn("some error message")
-        whenever(context.getString(R.string.exercise_name)).thenReturn("name")
-        whenever(context.getString(R.string.exercise_description)).thenReturn("description")
-        whenever(context.getString(eq(R.string.validation_value_empty), any())).then {
-            "some error message " + it.arguments[1]
+        val captured = mutableListOf<Any?>()
+        every {
+            context.getString(eq(R.string.validation_value_empty), *varargAllNullable { captured.add(it) })
+        } answers {
+            val secondArg = captured[0] as String
+            captured.clear()
+            "some error message $secondArg"
         }
 
         viewModel = ExercisesViewModel(repositoryMock, toastServiceMock)
@@ -57,11 +60,14 @@ class ExercisesViewModelTest {
 
     @Test
     fun `routineData is null after loading`() = runTest {
+        coEvery { repositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID) } returns null
+        justRun { toastServiceMock.showText(any(), any(), any()) }
+
         viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
 
         val loadedData = viewModel.routineData
         assertThat(loadedData).isNull()
-        verify(toastServiceMock).showText(context, "some error message", Toast.LENGTH_LONG)
+        verify { toastServiceMock.showText(context, "some error message", Toast.LENGTH_LONG) }
     }
 
     @Test
@@ -73,7 +79,7 @@ class ExercisesViewModelTest {
             Exercise(name = "Exercise 3", description = "Description 3", routineId = routine.id),
         )
         val data = RoutineWithExercises(routine, exercises)
-        whenever(repositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID)).thenReturn(data)
+        coEvery { repositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID) } returns data
 
         viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
 
@@ -88,9 +94,9 @@ class ExercisesViewModelTest {
         val routine = Routine(TEST_ROUTINE_ID, "Some Routine", "Some Description")
         val exercises = mutableListOf<Exercise>()
         val data = RoutineWithExercises(routine, exercises)
-        whenever(repositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID)).thenReturn(data)
-        whenever(repositoryMock.addExercise(any())).then {
-            exercises.add(it.arguments[0] as Exercise)
+        coEvery { repositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID) } returns data
+        coEvery { repositoryMock.addExercise(any()) } answers {
+            exercises.add(firstArg())
         }
 
         viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
@@ -101,7 +107,7 @@ class ExercisesViewModelTest {
         val exercise = Exercise(name = "Some Exercise", description = "some description", routineId = TEST_ROUTINE_ID)
         viewModel.addExercise(context, TEST_ROUTINE_ID, exercise)
 
-        verify(repositoryMock).addExercise(exercise)
+        coVerify { repositoryMock.addExercise(exercise) }
 
         assertThat(loadedData.exercises).hasSize(1)
         assertThat(loadedData.exercises[0]).isEqualTo(exercise)
