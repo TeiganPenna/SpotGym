@@ -111,7 +111,22 @@ private fun AddExerciseDialog(
     SpotDialog(
         title = stringResource(R.string.exercises_name_exercise),
         setShowDialog = { showDialog.value = it },
-        validate = { viewModel.validateExercise(context, name, nameIsError, description, descriptionIsError) },
+        validate = {
+            val result = viewModel.validateExercise(context, name.value, description.value)
+            if (!result.isSuccess) {
+                if (result.error!!.property == "name") {
+                    nameIsError.value = true
+                    descriptionIsError.value = false
+                } else if (result.error.property == "description") {
+                    nameIsError.value = false
+                    descriptionIsError.value = true
+                }
+            } else {
+                nameIsError.value = false
+                descriptionIsError.value = false
+            }
+            result
+        },
         onPositiveClick = {
             val exercise = Exercise(name = name.value, description = description.value, routineId = routineId)
             viewModel.addExercise(context, routineId, exercise)

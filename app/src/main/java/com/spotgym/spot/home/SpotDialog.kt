@@ -71,7 +71,7 @@ fun SpotDialog(
                             onPositiveClick()
                             setShowDialog(false)
                         } else {
-                            errorField = result.message ?: ""
+                            errorField = result.error?.message ?: ""
                         }
                     }
                 )
@@ -98,9 +98,21 @@ fun DialogValidationTextField(
     )
 }
 
-data class ValidationResult(
+@Suppress("DataClassPrivateConstructor")
+data class ValidationResult private constructor(
     val isSuccess: Boolean,
+    val error: ValidationErrorInformation?,
+) {
+    companion object {
+        val success = ValidationResult(true, null)
+        fun failure(message: String, property: String) =
+            ValidationResult(false, ValidationErrorInformation(message, property))
+    }
+}
+
+data class ValidationErrorInformation(
     val message: String?,
+    val property: String?,
 )
 
 @Composable

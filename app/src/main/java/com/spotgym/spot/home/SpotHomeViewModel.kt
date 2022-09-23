@@ -1,7 +1,6 @@
 package com.spotgym.spot.home
 
 import android.content.Context
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.spotgym.spot.R
@@ -35,36 +34,27 @@ class SpotHomeViewModel @Inject constructor(
     @SuppressWarnings("ReturnCount")
     fun validateRoutine(
         context: Context,
-        name: MutableState<String>,
-        nameIsError: MutableState<Boolean>,
-        description: MutableState<String>,
-        descriptionIsError: MutableState<Boolean>,
+        name: String,
+        description: String,
     ): ValidationResult {
-        if (name.value.isBlank()) {
-            nameIsError.value = true
-            descriptionIsError.value = false // reset so only one field has an error at a time
-            return ValidationResult(
-                false,
+        if (name.isBlank()) {
+            return ValidationResult.failure(
                 context.getString(
                     R.string.validation_value_empty,
                     context.getString(R.string.routine_name)
-                )
+                ),
+                "name"
             )
-        } else {
-            nameIsError.value = false
         }
-        if (description.value.isBlank()) {
-            descriptionIsError.value = true
-            return ValidationResult(
-                false,
+        if (description.isBlank()) {
+            return ValidationResult.failure(
                 context.getString(
                     R.string.validation_value_empty,
                     context.getString(R.string.routine_description)
-                )
+                ),
+                "description"
             )
-        } else {
-            descriptionIsError.value = false
         }
-        return ValidationResult(true, null)
+        return ValidationResult.success
     }
 }

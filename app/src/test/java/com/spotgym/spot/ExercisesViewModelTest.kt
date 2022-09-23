@@ -2,7 +2,6 @@ package com.spotgym.spot
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.runtime.mutableStateOf
 import com.spotgym.spot.data.Exercise
 import com.spotgym.spot.data.ExerciseRepository
 import com.spotgym.spot.data.Routine
@@ -109,111 +108,69 @@ class ExercisesViewModelTest {
     }
 
     @Test
-    fun `validateExercise succeeds for complete exercise`() = runTest {
-        val nameIsError = mutableStateOf(false)
-        val descriptionIsError = mutableStateOf(false)
-        val result = viewModel.validateExercise(
-            context,
-            mutableStateOf("name"),
-            nameIsError,
-            mutableStateOf("description"),
-            descriptionIsError,
+    fun `exercise validation succeeds for complete exercise`() = runTest {
+        testValidation(
+            name = "name",
+            description = "description",
+            expectedResult = true,
+            expectedErrorMessage = null,
+            expectedErrorProperty = null
         )
-
-        assertThat(result.isSuccess).isTrue
-        assertThat(result.message).isNull()
-        assertThat(nameIsError.value).isFalse
-        assertThat(descriptionIsError.value).isFalse
     }
 
     @Test
-    fun `validateExercise fails when name is empty`() = runTest {
-        val nameIsError = mutableStateOf(false)
-        val descriptionIsError = mutableStateOf(false)
-        val result = viewModel.validateExercise(
-            context,
-            mutableStateOf(""),
-            nameIsError,
-            mutableStateOf("description"),
-            descriptionIsError,
+    fun `exercise validation fails when name is empty`() = runTest {
+        testValidation(
+            name = "",
+            description = "description",
+            expectedResult = false,
+            expectedErrorMessage = "some error message name",
+            expectedErrorProperty = "name"
         )
-
-        assertThat(result.isSuccess).isFalse
-        assertThat(result.message).isEqualTo("some error message name")
-        assertThat(nameIsError.value).isTrue
-        assertThat(descriptionIsError.value).isFalse
     }
 
     @Test
-    fun `validateExercise fails when description is empty`() = runTest {
-        val nameIsError = mutableStateOf(false)
-        val descriptionIsError = mutableStateOf(false)
-        val result = viewModel.validateExercise(
-            context,
-            mutableStateOf("name"),
-            nameIsError,
-            mutableStateOf(""),
-            descriptionIsError,
+    fun `exercise validation fails when description is empty`() = runTest {
+        testValidation(
+            name = "name",
+            description = "",
+            expectedResult = false,
+            expectedErrorMessage = "some error message description",
+            expectedErrorProperty = "description"
         )
-
-        assertThat(result.isSuccess).isFalse
-        assertThat(result.message).isEqualTo("some error message description")
-        assertThat(nameIsError.value).isFalse
-        assertThat(descriptionIsError.value).isTrue
     }
 
     @Test
-    fun `validateExercise resets nameIsError when name is ok`() = runTest {
-        val nameIsError = mutableStateOf(true)
-        val descriptionIsError = mutableStateOf(false)
-        val result = viewModel.validateExercise(
-            context,
-            mutableStateOf("name"),
-            nameIsError,
-            mutableStateOf("description"),
-            descriptionIsError,
+    fun `exercise validation when exercise is empty`() = runTest {
+        testValidation(
+            name = "",
+            description = "",
+            expectedResult = false,
+            expectedErrorMessage = "some error message name",
+            expectedErrorProperty = "name"
         )
-
-        assertThat(result.isSuccess).isTrue
-        assertThat(result.message).isNull()
-        assertThat(nameIsError.value).isFalse
-        assertThat(descriptionIsError.value).isFalse
     }
 
-    @Test
-    fun `validateExercise resets descriptionIsError when description is ok`() = runTest {
-        val nameIsError = mutableStateOf(false)
-        val descriptionIsError = mutableStateOf(true)
+    private fun testValidation(
+        name: String,
+        description: String,
+        expectedResult: Boolean,
+        expectedErrorMessage: String?,
+        expectedErrorProperty: String?,
+    ) {
         val result = viewModel.validateExercise(
             context,
-            mutableStateOf("name"),
-            nameIsError,
-            mutableStateOf("description"),
-            descriptionIsError,
+            name,
+            description,
         )
 
-        assertThat(result.isSuccess).isTrue
-        assertThat(result.message).isNull()
-        assertThat(nameIsError.value).isFalse
-        assertThat(descriptionIsError.value).isFalse
-    }
-
-    @Test
-    fun `validateExercise resets descriptionIsError when name is empty`() = runTest {
-        val nameIsError = mutableStateOf(false)
-        val descriptionIsError = mutableStateOf(true)
-        val result = viewModel.validateExercise(
-            context,
-            mutableStateOf(""),
-            nameIsError,
-            mutableStateOf(""),
-            descriptionIsError,
-        )
-
-        assertThat(result.isSuccess).isFalse
-        assertThat(result.message).isEqualTo("some error message name")
-        assertThat(nameIsError.value).isTrue
-        assertThat(descriptionIsError.value).isFalse
+        assertThat(result.isSuccess).isEqualTo(expectedResult)
+        if (expectedResult) {
+            assertThat(result.error).isNull()
+        } else {
+            assertThat(result.error!!.message).isEqualTo(expectedErrorMessage)
+            assertThat(result.error!!.property).isEqualTo(expectedErrorProperty)
+        }
     }
 
     companion object {

@@ -107,7 +107,22 @@ private fun AddRoutineDialog(
     SpotDialog(
         title = stringResource(R.string.routines_name_routine),
         setShowDialog = { showDialog.value = it },
-        validate = { viewModel.validateRoutine(context, name, nameIsError, description, descriptionIsError) },
+        validate = {
+            val result = viewModel.validateRoutine(context, name.value, description.value)
+            if (!result.isSuccess) {
+                if (result.error!!.property == "name") {
+                    nameIsError.value = true
+                    descriptionIsError.value = false
+                } else if (result.error.property == "description") {
+                    nameIsError.value = false
+                    descriptionIsError.value = true
+                }
+            } else {
+                nameIsError.value = false
+                descriptionIsError.value = false
+            }
+            result
+        },
         onPositiveClick = {
             val routine = Routine(name = name.value, description = description.value)
             viewModel.addRoutine(routine)
