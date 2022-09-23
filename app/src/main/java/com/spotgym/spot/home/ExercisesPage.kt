@@ -114,10 +114,10 @@ private fun AddExerciseDialog(
         validate = {
             val result = viewModel.validateExercise(context, name.value, description.value)
             if (!result.isSuccess) {
-                if (result.error!!.property == "name") {
+                if (result.error!!.property == ExercisesViewModel.EXERCISE_NAME_PROPERTY) {
                     nameIsError.value = true
                     descriptionIsError.value = false
-                } else if (result.error.property == "description") {
+                } else if (result.error.property == ExercisesViewModel.EXERCISE_DESCRIPTION_PROPERTY) {
                     nameIsError.value = false
                     descriptionIsError.value = true
                 }

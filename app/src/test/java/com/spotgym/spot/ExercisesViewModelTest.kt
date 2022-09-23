@@ -48,7 +48,7 @@ class ExercisesViewModelTest {
         every {
             context.getString(eq(R.string.validation_value_empty), *varargAllNullable { captured.add(it) })
         } answers {
-            val secondArg = captured[0] as String
+            val secondArg = captured[0] as String?
             captured.clear()
             "error $secondArg"
         }
@@ -146,9 +146,9 @@ class ExercisesViewModelTest {
         @JvmStatic
         fun validationTestData() = listOf(
             Arguments.of("name", "description", true, null, null),
-            Arguments.of("", "description", false, "error name", "name"),
-            Arguments.of("name", "", false, "error description", "description"),
-            Arguments.of("", "", false, "error name", "name"),
+            Arguments.of("", "description", false, "error name", ExercisesViewModel.EXERCISE_NAME_PROPERTY),
+            Arguments.of("name", "", false, "error description", ExercisesViewModel.EXERCISE_DESCRIPTION_PROPERTY),
+            Arguments.of("", "", false, "error name", ExercisesViewModel.EXERCISE_NAME_PROPERTY),
         )
     }
 }

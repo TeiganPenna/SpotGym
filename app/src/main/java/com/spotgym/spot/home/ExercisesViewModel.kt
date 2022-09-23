@@ -59,7 +59,7 @@ class ExercisesViewModel @Inject constructor(
                     R.string.validation_value_empty,
                     context.getString(R.string.exercise_name)
                 ),
-                "name"
+                EXERCISE_NAME_PROPERTY,
             )
         }
         if (description.isBlank()) {
@@ -68,9 +68,14 @@ class ExercisesViewModel @Inject constructor(
                     R.string.validation_value_empty,
                     context.getString(R.string.exercise_description)
                 ),
-                "description"
+                EXERCISE_DESCRIPTION_PROPERTY,
             )
         }
         return ValidationResult.success
+    }
+
+    companion object {
+        const val EXERCISE_NAME_PROPERTY = "name"
+        const val EXERCISE_DESCRIPTION_PROPERTY = "description"
     }
 }

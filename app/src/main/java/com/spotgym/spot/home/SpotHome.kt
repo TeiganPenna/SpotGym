@@ -110,10 +110,10 @@ private fun AddRoutineDialog(
         validate = {
             val result = viewModel.validateRoutine(context, name.value, description.value)
             if (!result.isSuccess) {
-                if (result.error!!.property == "name") {
+                if (result.error!!.property == SpotHomeViewModel.ROUTINE_NAME_PROPERTY) {
                     nameIsError.value = true
                     descriptionIsError.value = false
-                } else if (result.error.property == "description") {
+                } else if (result.error.property == SpotHomeViewModel.ROUTINE_DESCRIPTION_PROPERTY) {
                     nameIsError.value = false
                     descriptionIsError.value = true
                 }

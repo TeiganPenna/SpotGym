@@ -43,7 +43,7 @@ class SpotHomeViewModel @Inject constructor(
                     R.string.validation_value_empty,
                     context.getString(R.string.routine_name)
                 ),
-                "name"
+                ROUTINE_NAME_PROPERTY,
             )
         }
         if (description.isBlank()) {
@@ -52,9 +52,14 @@ class SpotHomeViewModel @Inject constructor(
                     R.string.validation_value_empty,
                     context.getString(R.string.routine_description)
                 ),
-                "description"
+                ROUTINE_DESCRIPTION_PROPERTY,
             )
         }
         return ValidationResult.success
+    }
+
+    companion object {
+        const val ROUTINE_NAME_PROPERTY = "name"
+        const val ROUTINE_DESCRIPTION_PROPERTY = "description"
     }
 }
