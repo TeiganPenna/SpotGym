@@ -21,6 +21,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class, MainCoroutineExtension::class)
 @ExperimentalCoroutinesApi
@@ -47,7 +50,7 @@ class ExercisesViewModelTest {
         } answers {
             val secondArg = captured[0] as String
             captured.clear()
-            "some error message $secondArg"
+            "error $secondArg"
         }
 
         viewModel = ExercisesViewModel(repositoryMock, toastServiceMock)
@@ -113,51 +116,9 @@ class ExercisesViewModelTest {
         assertThat(loadedData.exercises[0]).isEqualTo(exercise)
     }
 
-    @Test
-    fun `exercise validation succeeds for complete exercise`() = runTest {
-        testValidation(
-            name = "name",
-            description = "description",
-            expectedResult = true,
-            expectedErrorMessage = null,
-            expectedErrorProperty = null
-        )
-    }
-
-    @Test
-    fun `exercise validation fails when name is empty`() = runTest {
-        testValidation(
-            name = "",
-            description = "description",
-            expectedResult = false,
-            expectedErrorMessage = "some error message name",
-            expectedErrorProperty = "name"
-        )
-    }
-
-    @Test
-    fun `exercise validation fails when description is empty`() = runTest {
-        testValidation(
-            name = "name",
-            description = "",
-            expectedResult = false,
-            expectedErrorMessage = "some error message description",
-            expectedErrorProperty = "description"
-        )
-    }
-
-    @Test
-    fun `exercise validation when exercise is empty`() = runTest {
-        testValidation(
-            name = "",
-            description = "",
-            expectedResult = false,
-            expectedErrorMessage = "some error message name",
-            expectedErrorProperty = "name"
-        )
-    }
-
-    private fun testValidation(
+    @ParameterizedTest
+    @MethodSource("validationTestData")
+    fun `exercise validation`(
         name: String,
         description: String,
         expectedResult: Boolean,
@@ -181,5 +142,13 @@ class ExercisesViewModelTest {
 
     companion object {
         const val TEST_ROUTINE_ID = 0
+
+        @JvmStatic
+        fun validationTestData() = listOf(
+            Arguments.of("name", "description", true, null, null),
+            Arguments.of("", "description", false, "error name", "name"),
+            Arguments.of("name", "", false, "error description", "description"),
+            Arguments.of("", "", false, "error name", "name"),
+        )
     }
 }

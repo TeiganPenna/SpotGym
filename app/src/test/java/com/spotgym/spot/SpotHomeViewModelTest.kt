@@ -15,6 +15,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 @ExtendWith(MockKExtension::class, MainCoroutineExtension::class)
 @ExperimentalCoroutinesApi
@@ -38,7 +41,7 @@ class SpotHomeViewModelTest {
         } answers {
             val secondArg = captured[0] as String
             captured.clear()
-            "some error message $secondArg"
+            "error $secondArg"
         }
 
         viewModel = SpotHomeViewModel(repositoryMock)
@@ -90,51 +93,9 @@ class SpotHomeViewModelTest {
         assertThat(loadedRoutines!![0]).isEqualTo(routine)
     }
 
-    @Test
-    fun `routine validation succeeds for complete routine`() = runTest {
-        testValidation(
-            name = "name",
-            description = "description",
-            expectedResult = true,
-            expectedErrorMessage = null,
-            expectedErrorProperty = null,
-        )
-    }
-
-    @Test
-    fun `routine validation fails when name is empty`() = runTest {
-        testValidation(
-            name = "",
-            description = "description",
-            expectedResult = false,
-            expectedErrorMessage = "some error message name",
-            expectedErrorProperty = "name",
-        )
-    }
-
-    @Test
-    fun `routine validation fails when description is empty`() = runTest {
-        testValidation(
-            name = "name",
-            description = "",
-            expectedResult = false,
-            expectedErrorMessage = "some error message description",
-            expectedErrorProperty = "description",
-        )
-    }
-
-    @Test
-    fun `routine validation fails when routine is empty`() = runTest {
-        testValidation(
-            name = "",
-            description = "",
-            expectedResult = false,
-            expectedErrorMessage = "some error message name",
-            expectedErrorProperty = "name",
-        )
-    }
-
-    private fun testValidation(
+    @ParameterizedTest
+    @MethodSource("validationTestData")
+    fun `routine validation`(
         name: String,
         description: String,
         expectedResult: Boolean,
@@ -154,5 +115,15 @@ class SpotHomeViewModelTest {
             assertThat(result.error!!.message).isEqualTo(expectedErrorMessage)
             assertThat(result.error!!.property).isEqualTo(expectedErrorProperty)
         }
+    }
+
+    companion object {
+        @JvmStatic
+        fun validationTestData() = listOf(
+            Arguments.of("name", "description", true, null, null),
+            Arguments.of("", "description", false, "error name", "name"),
+            Arguments.of("name", "", false, "error description", "description"),
+            Arguments.of("", "", false, "error name", "name"),
+        )
     }
 }
