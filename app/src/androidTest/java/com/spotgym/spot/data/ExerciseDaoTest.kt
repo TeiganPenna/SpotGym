@@ -59,7 +59,7 @@ class ExerciseDaoTest {
     }
 
     @Test
-    fun getExercises(): Unit = runBlocking {
+    fun `get all exercises`(): Unit = runBlocking {
         val exerciseList = exerciseDao.getAll()
 
         assertThat(exerciseList[0]).isEqualTo(exercise1)
@@ -68,7 +68,7 @@ class ExerciseDaoTest {
     }
 
     @Test
-    fun insertAndGetRoutine(): Unit = runBlocking {
+    fun `insert and get routine`(): Unit = runBlocking {
         val exercise = Exercise(4, "Dummy Exercise", "some description", routine3.id)
         exerciseDao.insert(exercise)
         val result = exerciseDao.getById(4)
@@ -76,7 +76,7 @@ class ExerciseDaoTest {
     }
 
     @Test
-    fun getRoutineWithExercises(): Unit = runBlocking {
+    fun `get Routine with exercises`(): Unit = runBlocking {
         var routineWithExercises = exerciseDao.getRoutineWithExercises(1)
         assertThat(routineWithExercises!!.routine.id).isEqualTo(1)
         assertThat(routineWithExercises.exercises).hasSize(2)

@@ -49,7 +49,7 @@ class RoutineDaoTest {
     }
 
     @Test
-    fun getRoutines(): Unit = runBlocking {
+    fun `get all routines`(): Unit = runBlocking {
         val routineList = routineDao.getAll()
 
         assertThat(routineList[0]).isEqualTo(routine1)
@@ -58,7 +58,7 @@ class RoutineDaoTest {
     }
 
     @Test
-    fun insertAndGetRoutine(): Unit = runBlocking {
+    fun `insert and get routine`(): Unit = runBlocking {
         val routine = Routine(4, "Dummy Routine", "some description")
         routineDao.insert(routine)
         val result = routineDao.getById(4)
