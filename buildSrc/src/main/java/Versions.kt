@@ -16,9 +16,11 @@ object Versions {
     const val ROOM = "2.4.3"
 
     // Test dependencies
+    const val ANDROID_TEST_RUNNER = "1.4.0"
     const val ASSERTJ = "3.23.1"
     const val CORE_TESTING = "2.1.0"
     const val ESPRESSO = "3.4.0"
+    const val JUNIT_JUPITER_ANDROID = "1.3.0"
     const val JUNIT_JUPITER = "5.9.1"
     const val KOTLINX_COROUTINES = "1.6.4"
     const val MOCKK = "1.12.8"

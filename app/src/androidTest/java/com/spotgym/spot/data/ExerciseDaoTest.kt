@@ -1,21 +1,19 @@
 package com.spotgym.spot.data
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.spotgym.spot.InstantExecutorExtension
 import com.spotgym.spot.data.room.ExerciseDao
 import com.spotgym.spot.data.room.RoutineDao
 import com.spotgym.spot.data.room.SpotDatabase
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
-@RunWith(AndroidJUnit4::class)
+@ExtendWith(InstantExecutorExtension::class)
 class ExerciseDaoTest {
     private lateinit var routineDao: RoutineDao
     private lateinit var exerciseDao: ExerciseDao
@@ -29,11 +27,8 @@ class ExerciseDaoTest {
     private val exercise2 = Exercise(2, "B", "some description", routine1.id)
     private val exercise3 = Exercise(3, "C", "some description", routine2.id)
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @Before
-    fun before() = runBlocking {
+    @BeforeEach
+    fun beforeEach() = runBlocking {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         db = Room.inMemoryDatabaseBuilder(
             context,
@@ -53,8 +48,8 @@ class ExerciseDaoTest {
         exerciseDao.insert(exercise3)
     }
 
-    @After
-    fun after() {
+    @AfterEach
+    fun afterEach() {
         db.close()
     }
 

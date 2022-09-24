@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("dagger.hilt.android.plugin")
+    id("de.mannodermaus.android-junit5")
     id("io.gitlab.arturbosch.detekt")
     kotlin("kapt")
     id("org.jetbrains.kotlin.android")
@@ -18,6 +19,9 @@ android {
         versionName = AppVersion.Name
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments += mapOf(
+            "runnerBuilder" to "de.mannodermaus.junit5.AndroidJUnit5Builder"
+        )
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -82,10 +86,14 @@ dependencies {
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:${Versions.CORE_TESTING}")
-    androidTestImplementation("androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}")
+//    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}")
+//    androidTestImplementation("androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.ESPRESSO}")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}")
+    androidTestImplementation("androidx.test:runner:${Versions.ANDROID_TEST_RUNNER}")
+    androidTestImplementation("de.mannodermaus.junit5:android-test-core:${Versions.JUNIT_JUPITER_ANDROID}")
+    androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:${Versions.JUNIT_JUPITER_ANDROID}")
     androidTestImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
+    androidTestImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
     debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
     testImplementation("io.mockk:mockk:${Versions.MOCKK}")
