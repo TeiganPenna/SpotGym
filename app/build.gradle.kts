@@ -86,8 +86,6 @@ dependencies {
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:${Versions.CORE_TESTING}")
-//    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}")
-//    androidTestImplementation("androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.ESPRESSO}")
     androidTestImplementation("androidx.test:runner:${Versions.ANDROID_TEST_RUNNER}")
     androidTestImplementation("de.mannodermaus.junit5:android-test-core:${Versions.JUNIT_JUPITER_ANDROID}")
