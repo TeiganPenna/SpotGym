@@ -1,4 +1,4 @@
-package com.spotgym.spot
+package com.spotgym.spot.data
 
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor

@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -85,6 +86,7 @@ fun DialogValidationTextField(
     label: String,
     value: MutableState<String>,
     isError: MutableState<Boolean>,
+    testTag: String? = null
 ) {
     TextField(
         label = { Text(label) },
@@ -95,6 +97,7 @@ fun DialogValidationTextField(
         },
         isError = isError.value,
         singleLine = true,
+        modifier = Modifier.then(if (testTag != null) Modifier.testTag(testTag) else Modifier)
     )
 }
 

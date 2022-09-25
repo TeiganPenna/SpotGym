@@ -2,7 +2,6 @@ package com.spotgym.spot.data
 
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
-import com.spotgym.spot.InstantExecutorExtension
 import com.spotgym.spot.data.room.ExerciseDao
 import com.spotgym.spot.data.room.RoutineDao
 import com.spotgym.spot.data.room.SpotDatabase

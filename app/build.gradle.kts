@@ -86,12 +86,17 @@ dependencies {
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:${Versions.CORE_TESTING}")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
+    androidTestImplementation("androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.ESPRESSO}")
     androidTestImplementation("androidx.test:runner:${Versions.ANDROID_TEST_RUNNER}")
     androidTestImplementation("de.mannodermaus.junit5:android-test-core:${Versions.JUNIT_JUPITER_ANDROID}")
     androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:${Versions.JUNIT_JUPITER_ANDROID}")
+    androidTestImplementation("io.mockk:mockk:${Versions.MOCKK}")
     androidTestImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
     androidTestImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
+
     debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
     testImplementation("io.mockk:mockk:${Versions.MOCKK}")
