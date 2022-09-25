@@ -9,6 +9,7 @@ plugins {
 }
 
 android {
+    namespace = "com.spotgym.spot"
     compileSdk = Versions.COMPILE_SDK
 
     defaultConfig {
