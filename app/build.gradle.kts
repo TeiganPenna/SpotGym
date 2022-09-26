@@ -62,7 +62,7 @@ android {
 }
 
 detekt {
-    config = files("${project.rootDir}/detekt.yml")
+    config = files("${project.rootDir}/config/detekt.yml")
 }
 
 dependencies {
