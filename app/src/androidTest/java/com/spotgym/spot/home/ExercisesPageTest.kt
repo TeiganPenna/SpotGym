@@ -89,10 +89,14 @@ class ExercisesPageTest {
     @Test
     fun `when loads exercises should display them`() = runTest {
         whenever(exerciseRepositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID))
-            .thenReturn(getRoutineWithExercises(listOf(
-                Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID),
-                Exercise(name = "Bar", description = "Some other description", routineId = TEST_ROUTINE_ID),
-            )))
+            .thenReturn(
+                getRoutineWithExercises(
+                    listOf(
+                        Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID),
+                        Exercise(name = "Bar", description = "Some other description", routineId = TEST_ROUTINE_ID),
+                    )
+                )
+            )
 
         setUpExercisesPage()
 

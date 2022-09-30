@@ -83,10 +83,12 @@ class SpotHomeTest {
 
     @Test
     fun `when loads routines should display them`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(listOf(
-            Routine(name = "Foo", description = "Some description"),
-            Routine(name = "Bar", description = "Some other description")
-        ))
+        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(
+            listOf(
+                Routine(name = "Foo", description = "Some description"),
+                Routine(name = "Bar", description = "Some other description")
+            )
+        )
 
         setUpHome(
             onRoutineClicked = {}
@@ -100,9 +102,11 @@ class SpotHomeTest {
 
     @Test
     fun `when loads routine clicked should navigate with id`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(listOf(
-            Routine(id = 4, name = "Foo", description = "Some description"),
-        ))
+        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(
+            listOf(
+                Routine(id = 4, name = "Foo", description = "Some description"),
+            )
+        )
 
         var routineId: Int? = null
 
