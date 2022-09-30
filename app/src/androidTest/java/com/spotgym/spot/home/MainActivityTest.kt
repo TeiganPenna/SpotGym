@@ -14,7 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class MyActivityTest {
+class MainActivityTest {
 
     @get:Rule(order = 1)
     val hiltTestRule = HiltAndroidRule(this)
