@@ -97,6 +97,8 @@ dependencies {
     androidTestImplementation("io.mockk:mockk:${Versions.MOCKK}")
     androidTestImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
     androidTestImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
+    androidTestImplementation("org.mockito:mockito-android:4.8.0")
+    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")

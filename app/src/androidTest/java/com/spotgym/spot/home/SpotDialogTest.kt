@@ -122,7 +122,7 @@ class SpotDialogTest {
 
             SpotDialog(
                 title = "some title",
-                setShowDialog = { setShowDialog(it) },
+                setShowDialog = setShowDialog,
                 validate = {
                     if (field.value.isBlank()) {
                         fieldIsError.value = true
@@ -132,9 +132,7 @@ class SpotDialogTest {
                         ValidationResult.success
                     }
                 },
-                onPositiveClick = {
-                    onPositiveClick()
-                }
+                onPositiveClick = onPositiveClick
             ) {
                 DialogValidationTextField(
                     label = "some field",

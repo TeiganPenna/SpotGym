@@ -131,13 +131,15 @@ private fun AddRoutineDialog(
         DialogValidationTextField(
             label = stringResource(R.string.routine_name),
             value = name,
-            isError = nameIsError
+            isError = nameIsError,
+            testTag = "nameField"
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.routine_description),
             value = description,
-            isError = descriptionIsError
+            isError = descriptionIsError,
+            testTag = "descField"
         )
     }
 }
