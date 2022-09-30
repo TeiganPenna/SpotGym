@@ -1,4 +1,19 @@
 <resources>
     <string name="app_name">Spot</string>
+
     <string name="routines_title">Routines</string>
+    <string name="routines_add_routine_description">Add routine</string>
+    <string name="routines_add_routine">Add Routine</string>
+
+    <string name="routine_name">Name</string>
+    <string name="routine_description">Description</string>
+
+    <string name="exercises_error_findroutine">Unable to find routine</string>
+    <string name="exercises_add_exercise_description">Add exercise</string>
+    <string name="exercises_add_exercise">Add Exercise</string>
+
+    <string name="exercise_description">Description</string>
+    <string name="exercise_name">Name</string>
+
+    <string name="validation_value_empty">%s cannot be empty</string>
 </resources>

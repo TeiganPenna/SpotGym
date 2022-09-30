@@ -3,70 +3,57 @@ package com.spotgym.spot.home
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.spotgym.spot.ui.theme.SpotTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @ExperimentalAnimationApi
+    @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            LoadMainScreen()
-        }
-    }
-}
+            SpotTheme {
+                val navController = rememberAnimatedNavController()
 
-@Composable
-fun LoadMainScreen(mainViewModel: MainViewModel = viewModel()) {
-    val title: String by mainViewModel.screenTitle.observeAsState("")
-
-    SpotTheme {
-        Scaffold(
-            scaffoldState = rememberScaffoldState(),
-            topBar = {
-                TopAppBar(
-                    title = { Text(title) },
-                )
-            }
-        ) { contentPadding ->
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-                color = MaterialTheme.colors.background
-            ) {
-                val navController = rememberNavController()
-
-                NavHost(
+                AnimatedNavHost(
                     navController = navController,
-                    startDestination = Routes.Home.route
+                    startDestination = Routes.Home.route,
+                    enterTransition = { EnterTransition.None },
+                    exitTransition = { ExitTransition.None },
+                    popEnterTransition = { EnterTransition.None },
+                    popExitTransition = { ExitTransition.None },
                 ) {
                     composable(Routes.Home.route) {
                         SpotHome(
-                            viewModel = mainViewModel,
                             onRoutineClicked = { routineId ->
                                 navController.navigate(Routes.Routine.route + "/$routineId")
                             }
                         )
                     }
-                    composable(Routes.Routine.route + "/{routineId}") { backStackEntry ->
-                        val routineId = backStackEntry.arguments?.getString("routineId")
-                        RoutinePage(mainViewModel, routineId!!)
+                    composable(
+                        route = Routes.Routine.route + "/{routineId}",
+                        arguments = listOf(
+                            navArgument("routineId") {
+                                type = NavType.IntType
+                            },
+                        )
+                    ) { backStackEntry ->
+                        val routineId = backStackEntry.arguments?.getInt("routineId")
+                        ExercisesPage(
+                            routineId = routineId!!
+                        )
                     }
                 }
             }

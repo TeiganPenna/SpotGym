@@ -1,6 +1,5 @@
 package com.spotgym.spot.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,8 +20,6 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -34,29 +31,30 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
-import com.spotgym.spot.data.Routine
-
-typealias OnRoutineClicked = (Int) -> Unit
+import com.spotgym.spot.data.Exercise
 
 @Composable
 @ExperimentalComposeUiApi
-fun SpotHome(
-    viewModel: SpotHomeViewModel = hiltViewModel(),
-    onRoutineClicked: OnRoutineClicked,
+fun ExercisesPage(
+    viewModel: ExercisesViewModel = hiltViewModel(),
+    routineId: Int
 ) {
-    val routines by viewModel.routines.collectAsState()
+    val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.loadRoutines()
+    LaunchedEffect(routineId) {
+        viewModel.loadRoutineData(context, routineId)
     }
 
-    if (routines == null) {
+    if (viewModel.routineData == null) {
         SpotLoadingPage()
     } else {
+        val routine = viewModel.routineData!!.routine
+
         val showAddDialog = remember { mutableStateOf(false) }
         if (showAddDialog.value) {
-            AddRoutineDialog(
+            AddExerciseDialog(
                 viewModel = viewModel,
+                routine.id,
                 showDialog = showAddDialog,
             )
         }
@@ -64,13 +62,13 @@ fun SpotHome(
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = { showAddDialog.value = true }) {
-                    Icon(Icons.Filled.Add, stringResource(R.string.routines_add_routine_description))
+                    Icon(Icons.Filled.Add, stringResource(R.string.exercises_add_exercise_description))
                 }
             },
             scaffoldState = rememberScaffoldState(),
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(R.string.routines_title)) },
+                    title = { Text(routine.name) },
                 )
             }
         ) { contentPadding ->
@@ -81,8 +79,13 @@ fun SpotHome(
                 color = MaterialTheme.colors.background
             ) {
                 LazyColumn(modifier = Modifier.padding(10.dp)) {
-                    items(routines!!) { routine ->
-                        RoutineCard(routine, onRoutineClicked)
+                    val exercises = viewModel.routineData!!.exercises
+
+                    items(exercises) { exercise ->
+                        ExerciseCard(
+                            name = exercise.name,
+                            description = exercise.description
+                        )
                     }
                 }
             }
@@ -92,8 +95,9 @@ fun SpotHome(
 
 @Composable
 @ExperimentalComposeUiApi
-private fun AddRoutineDialog(
-    viewModel: SpotHomeViewModel,
+private fun AddExerciseDialog(
+    viewModel: ExercisesViewModel,
+    routineId: Int,
     showDialog: MutableState<Boolean>,
 ) {
     val context = LocalContext.current
@@ -105,15 +109,15 @@ private fun AddRoutineDialog(
     val descriptionIsError = remember { mutableStateOf(false) }
 
     SpotDialog(
-        title = stringResource(R.string.routines_add_routine),
+        title = stringResource(R.string.exercises_add_exercise),
         setShowDialog = { showDialog.value = it },
         validate = {
-            val result = viewModel.validateRoutine(context, name.value, description.value)
+            val result = viewModel.validateExercise(context, name.value, description.value)
             if (!result.isSuccess) {
-                if (result.error!!.property == SpotHomeViewModel.ROUTINE_NAME_PROPERTY) {
+                if (result.error!!.property == ExercisesViewModel.EXERCISE_NAME_PROPERTY) {
                     nameIsError.value = true
                     descriptionIsError.value = false
-                } else if (result.error.property == SpotHomeViewModel.ROUTINE_DESCRIPTION_PROPERTY) {
+                } else if (result.error.property == ExercisesViewModel.EXERCISE_DESCRIPTION_PROPERTY) {
                     nameIsError.value = false
                     descriptionIsError.value = true
                 }
@@ -124,49 +128,46 @@ private fun AddRoutineDialog(
             result
         },
         onPositiveClick = {
-            val routine = Routine(name = name.value, description = description.value)
-            viewModel.addRoutine(routine)
+            val exercise = Exercise(name = name.value, description = description.value, routineId = routineId)
+            viewModel.addExercise(context, routineId, exercise)
         },
     ) {
         DialogValidationTextField(
-            label = stringResource(R.string.routine_name),
+            label = stringResource(R.string.exercise_name),
             value = name,
             isError = nameIsError,
-            testTag = "nameField"
+            testTag = "nameField",
         )
 
         DialogValidationTextField(
-            label = stringResource(R.string.routine_description),
+            label = stringResource(R.string.exercise_description),
             value = description,
             isError = descriptionIsError,
-            testTag = "descField"
+            testTag = "descField",
         )
     }
 }
 
 @Composable
-private fun RoutineCard(
-    routine: Routine,
-    onRoutineClicked: OnRoutineClicked
+private fun ExerciseCard(
+    name: String,
+    description: String,
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp)
-            .clickable {
-                onRoutineClicked(routine.id)
-            },
+            .padding(5.dp),
         elevation = 10.dp
     ) {
         Column(
             modifier = Modifier.padding(15.dp)
         ) {
             Text(
-                text = routine.name,
+                text = name,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = routine.description,
+                text = description,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

@@ -1,20 +1,34 @@
 package com.spotgym.spot.data
 
-import kotlinx.coroutines.flow.Flow
+import com.spotgym.spot.data.room.RoutineDao
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RoutineRepository(private val routineDao: RoutineDao) {
+interface RoutineRepository {
+    suspend fun getAllRoutines(): List<Routine>
+    suspend fun getRoutine(id: Int): Routine?
+    suspend fun addRoutine(routine: Routine)
+    suspend fun updateRoutine(routine: Routine)
+    suspend fun deleteRoutine(routine: Routine)
+}
 
-    val readAllData: Flow<List<Routine>> = routineDao.getAll()
+@Singleton
+class RoutineRepositoryImpl
+@Inject constructor(private val routineDao: RoutineDao) : RoutineRepository {
 
-    suspend fun addRoutine(routine: Routine) {
+    override suspend fun getAllRoutines(): List<Routine> = routineDao.getAll()
+
+    override suspend fun getRoutine(id: Int): Routine? = routineDao.getById(id)
+
+    override suspend fun addRoutine(routine: Routine) {
         routineDao.insert(routine)
     }
 
-    suspend fun updateRoutine(routine: Routine) {
+    override suspend fun updateRoutine(routine: Routine) {
         routineDao.update(routine)
     }
 
-    suspend fun deleteRoutine(routine: Routine) {
+    override suspend fun deleteRoutine(routine: Routine) {
         routineDao.delete(routine)
     }
 }
