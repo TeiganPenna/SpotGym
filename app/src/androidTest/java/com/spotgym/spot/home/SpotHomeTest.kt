@@ -27,9 +27,9 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.whenever
 
-@ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
 @ExperimentalComposeUiApi
+@ExperimentalCoroutinesApi
 class SpotHomeTest {
 
     @get:Rule
@@ -248,12 +248,12 @@ class SpotHomeTest {
     }
 
     private fun setUpHome(
-        onRoutineClicked: OnRoutineClicked
+        onRoutineClicked: OnRoutineClicked,
     ) {
         composeTestRule.setContent {
             SpotHome(
                 viewModel = viewModel,
-                onRoutineClicked = onRoutineClicked
+                onRoutineClicked = onRoutineClicked,
             )
         }
     }

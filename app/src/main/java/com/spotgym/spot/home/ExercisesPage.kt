@@ -135,13 +135,15 @@ private fun AddExerciseDialog(
         DialogValidationTextField(
             label = stringResource(R.string.exercise_name),
             value = name,
-            isError = nameIsError
+            isError = nameIsError,
+            testTag = "nameField",
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.exercise_description),
             value = description,
-            isError = descriptionIsError
+            isError = descriptionIsError,
+            testTag = "descField",
         )
     }
 }
