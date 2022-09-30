@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,8 +38,9 @@ import com.spotgym.spot.data.Exercise
 @Composable
 @ExperimentalComposeUiApi
 fun ExercisesPage(
+    routineId: Int,
+    modifier: Modifier = Modifier,
     viewModel: ExercisesViewModel = hiltViewModel(),
-    routineId: Int
 ) {
     val context = LocalContext.current
 
@@ -46,7 +49,7 @@ fun ExercisesPage(
     }
 
     if (viewModel.routineData == null) {
-        SpotLoadingPage()
+        SpotLoadingPage(modifier)
     } else {
         val routine = viewModel.routineData!!.routine
 
@@ -70,7 +73,8 @@ fun ExercisesPage(
                 TopAppBar(
                     title = { Text(routine.name) },
                 )
-            }
+            },
+            modifier = modifier
         ) { contentPadding ->
             Surface(
                 modifier = Modifier
@@ -131,19 +135,23 @@ private fun AddExerciseDialog(
             val exercise = Exercise(name = name.value, description = description.value, routineId = routineId)
             viewModel.addExercise(context, routineId, exercise)
         },
+        modifier = Modifier
+            .padding(35.dp)
+            .fillMaxWidth()
+            .wrapContentWidth()
     ) {
         DialogValidationTextField(
             label = stringResource(R.string.exercise_name),
             value = name,
             isError = nameIsError,
-            testTag = "nameField",
+            modifier = Modifier.testTag("nameField")
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.exercise_description),
             value = description,
             isError = descriptionIsError,
-            testTag = "descField",
+            modifier = Modifier.testTag("descField")
         )
     }
 }

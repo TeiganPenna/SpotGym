@@ -3,6 +3,8 @@ package com.spotgym.spot.home
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
@@ -138,7 +140,7 @@ class SpotDialogTest {
                     label = "some field",
                     value = field,
                     isError = fieldIsError,
-                    testTag = "textField"
+                    modifier = Modifier.testTag("textField"),
                 )
             }
         }
@@ -152,7 +154,7 @@ class SpotDialogTest {
                 label = "some field",
                 value = mutableValue,
                 isError = mutableIsError,
-                testTag = "textField",
+                modifier = Modifier.testTag("textField"),
             )
         }
     }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,8 +43,9 @@ typealias OnRoutineClicked = (Int) -> Unit
 @Composable
 @ExperimentalComposeUiApi
 fun SpotHome(
-    viewModel: SpotHomeViewModel = hiltViewModel(),
     onRoutineClicked: OnRoutineClicked,
+    modifier: Modifier = Modifier,
+    viewModel: SpotHomeViewModel = hiltViewModel(),
 ) {
     val routines by viewModel.routines.collectAsState()
 
@@ -51,7 +54,7 @@ fun SpotHome(
     }
 
     if (routines == null) {
-        SpotLoadingPage()
+        SpotLoadingPage(modifier)
     } else {
         val showAddDialog = remember { mutableStateOf(false) }
         if (showAddDialog.value) {
@@ -72,7 +75,8 @@ fun SpotHome(
                 TopAppBar(
                     title = { Text(stringResource(R.string.routines_title)) },
                 )
-            }
+            },
+            modifier = modifier,
         ) { contentPadding ->
             Surface(
                 modifier = Modifier
@@ -127,19 +131,23 @@ private fun AddRoutineDialog(
             val routine = Routine(name = name.value, description = description.value)
             viewModel.addRoutine(routine)
         },
+        modifier = Modifier
+            .padding(35.dp)
+            .fillMaxWidth()
+            .wrapContentWidth()
     ) {
         DialogValidationTextField(
             label = stringResource(R.string.routine_name),
             value = name,
             isError = nameIsError,
-            testTag = "nameField"
+            modifier = Modifier.testTag("nameField")
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.routine_description),
             value = description,
             isError = descriptionIsError,
-            testTag = "descField"
+            modifier = Modifier.testTag("descField")
         )
     }
 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +34,7 @@ fun SpotDialog(
     setShowDialog: (Boolean) -> Unit,
     onPositiveClick: () -> Unit,
     validate: () -> ValidationResult,
+    modifier: Modifier = Modifier,
     content: @Composable
     () -> Unit,
 ) {
@@ -43,14 +42,11 @@ fun SpotDialog(
 
     Dialog(
         onDismissRequest = { setShowDialog(false) },
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Card(
             elevation = 10.dp,
-            modifier = Modifier
-                .padding(35.dp)
-                .fillMaxWidth()
-                .wrapContentWidth()
+            modifier = modifier,
         ) {
             Column(
                 modifier = Modifier.padding(15.dp),
@@ -86,7 +82,7 @@ fun DialogValidationTextField(
     label: String,
     value: MutableState<String>,
     isError: MutableState<Boolean>,
-    testTag: String? = null
+    modifier: Modifier = Modifier
 ) {
     TextField(
         label = { Text(label) },
@@ -97,7 +93,7 @@ fun DialogValidationTextField(
         },
         isError = isError.value,
         singleLine = true,
-        modifier = Modifier.then(if (testTag != null) Modifier.testTag(testTag) else Modifier)
+        modifier = modifier,
     )
 }
 
