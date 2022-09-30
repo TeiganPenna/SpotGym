@@ -19,7 +19,7 @@ android {
         versionCode = AppVersion.Code
         versionName = AppVersion.Name
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.spotgym.spot.SpotHiltTestRunner"
         testInstrumentationRunnerArguments += mapOf(
             "runnerBuilder" to "de.mannodermaus.junit5.AndroidJUnit5Builder"
         )
@@ -92,6 +92,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.ESPRESSO}")
     androidTestImplementation("androidx.test:runner:${Versions.ANDROID_TEST_RUNNER}")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:${Versions.HILT}")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:${Versions.HILT}")
     androidTestImplementation("de.mannodermaus.junit5:android-test-core:${Versions.JUNIT_JUPITER_ANDROID}")
     androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:${Versions.JUNIT_JUPITER_ANDROID}")
     androidTestImplementation("io.mockk:mockk:${Versions.MOCKK}")
