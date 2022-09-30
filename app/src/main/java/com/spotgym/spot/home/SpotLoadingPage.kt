@@ -13,8 +13,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SpotLoadingPage() {
-    Scaffold { contentPadding ->
+fun SpotLoadingPage(
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        modifier
+    ) { contentPadding ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
@@ -19,12 +20,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,8 +39,9 @@ import com.spotgym.spot.data.Exercise
 @Composable
 @ExperimentalComposeUiApi
 fun ExercisesPage(
+    routineId: Int,
+    modifier: Modifier = Modifier,
     viewModel: ExercisesViewModel = hiltViewModel(),
-    routineId: Int
 ) {
     val context = LocalContext.current
 
@@ -46,22 +50,22 @@ fun ExercisesPage(
     }
 
     if (viewModel.routineData == null) {
-        SpotLoadingPage()
+        SpotLoadingPage(modifier)
     } else {
         val routine = viewModel.routineData!!.routine
 
-        val showAddDialog = remember { mutableStateOf(false) }
-        if (showAddDialog.value) {
+        var showAddDialog by remember { mutableStateOf(false) }
+        if (showAddDialog) {
             AddExerciseDialog(
                 viewModel = viewModel,
-                routine.id,
-                showDialog = showAddDialog,
+                routineId = routine.id,
+                setShowDialog = { showAddDialog = it }
             )
         }
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = { showAddDialog.value = true }) {
+                FloatingActionButton(onClick = { showAddDialog = true }) {
                     Icon(Icons.Filled.Add, stringResource(R.string.exercises_add_exercise_description))
                 }
             },
@@ -70,7 +74,8 @@ fun ExercisesPage(
                 TopAppBar(
                     title = { Text(routine.name) },
                 )
-            }
+            },
+            modifier = modifier
         ) { contentPadding ->
             Surface(
                 modifier = Modifier
@@ -98,52 +103,64 @@ fun ExercisesPage(
 private fun AddExerciseDialog(
     viewModel: ExercisesViewModel,
     routineId: Int,
-    showDialog: MutableState<Boolean>,
+    setShowDialog: SetShowDialog,
 ) {
     val context = LocalContext.current
 
-    val name = remember { mutableStateOf("") }
-    val nameIsError = remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+    var nameIsError by remember { mutableStateOf(false) }
 
-    val description = remember { mutableStateOf("") }
-    val descriptionIsError = remember { mutableStateOf(false) }
+    var description by remember { mutableStateOf("") }
+    var descriptionIsError by remember { mutableStateOf(false) }
 
     SpotDialog(
         title = stringResource(R.string.exercises_add_exercise),
-        setShowDialog = { showDialog.value = it },
+        setShowDialog = setShowDialog,
         validate = {
-            val result = viewModel.validateExercise(context, name.value, description.value)
+            val result = viewModel.validateExercise(context, name, description)
             if (!result.isSuccess) {
                 if (result.error!!.property == ExercisesViewModel.EXERCISE_NAME_PROPERTY) {
-                    nameIsError.value = true
-                    descriptionIsError.value = false
+                    nameIsError = true
+                    descriptionIsError = false
                 } else if (result.error.property == ExercisesViewModel.EXERCISE_DESCRIPTION_PROPERTY) {
-                    nameIsError.value = false
-                    descriptionIsError.value = true
+                    nameIsError = false
+                    descriptionIsError = true
                 }
             } else {
-                nameIsError.value = false
-                descriptionIsError.value = false
+                nameIsError = false
+                descriptionIsError = false
             }
             result
         },
         onPositiveClick = {
-            val exercise = Exercise(name = name.value, description = description.value, routineId = routineId)
+            val exercise = Exercise(name = name, description = description, routineId = routineId)
             viewModel.addExercise(context, routineId, exercise)
         },
+        modifier = Modifier
+            .padding(35.dp)
+            .fillMaxWidth()
+            .wrapContentWidth()
     ) {
         DialogValidationTextField(
             label = stringResource(R.string.exercise_name),
             value = name,
             isError = nameIsError,
-            testTag = "nameField",
+            onValueChanged = {
+                name = it
+                nameIsError = false
+            },
+            modifier = Modifier.testTag("nameField")
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.exercise_description),
             value = description,
             isError = descriptionIsError,
-            testTag = "descField",
+            onValueChanged = {
+                description = it
+                descriptionIsError = false
+            },
+            modifier = Modifier.testTag("descField")
         )
     }
 }

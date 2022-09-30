@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
@@ -20,14 +21,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,8 +43,9 @@ typealias OnRoutineClicked = (Int) -> Unit
 @Composable
 @ExperimentalComposeUiApi
 fun SpotHome(
-    viewModel: SpotHomeViewModel = hiltViewModel(),
     onRoutineClicked: OnRoutineClicked,
+    modifier: Modifier = Modifier,
+    viewModel: SpotHomeViewModel = hiltViewModel(),
 ) {
     val routines by viewModel.routines.collectAsState()
 
@@ -51,19 +54,19 @@ fun SpotHome(
     }
 
     if (routines == null) {
-        SpotLoadingPage()
+        SpotLoadingPage(modifier)
     } else {
-        val showAddDialog = remember { mutableStateOf(false) }
-        if (showAddDialog.value) {
+        var showAddDialog by remember { mutableStateOf(false) }
+        if (showAddDialog) {
             AddRoutineDialog(
                 viewModel = viewModel,
-                showDialog = showAddDialog,
+                setShowDialog = { showAddDialog = it },
             )
         }
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = { showAddDialog.value = true }) {
+                FloatingActionButton(onClick = { showAddDialog = true }) {
                     Icon(Icons.Filled.Add, stringResource(R.string.routines_add_routine_description))
                 }
             },
@@ -72,7 +75,8 @@ fun SpotHome(
                 TopAppBar(
                     title = { Text(stringResource(R.string.routines_title)) },
                 )
-            }
+            },
+            modifier = modifier,
         ) { contentPadding ->
             Surface(
                 modifier = Modifier
@@ -94,52 +98,64 @@ fun SpotHome(
 @ExperimentalComposeUiApi
 private fun AddRoutineDialog(
     viewModel: SpotHomeViewModel,
-    showDialog: MutableState<Boolean>,
+    setShowDialog: SetShowDialog,
 ) {
     val context = LocalContext.current
 
-    val name = remember { mutableStateOf("") }
-    val nameIsError = remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+    var nameIsError by remember { mutableStateOf(false) }
 
-    val description = remember { mutableStateOf("") }
-    val descriptionIsError = remember { mutableStateOf(false) }
+    var description by remember { mutableStateOf("") }
+    var descriptionIsError by remember { mutableStateOf(false) }
 
     SpotDialog(
         title = stringResource(R.string.routines_add_routine),
-        setShowDialog = { showDialog.value = it },
+        setShowDialog = setShowDialog,
         validate = {
-            val result = viewModel.validateRoutine(context, name.value, description.value)
+            val result = viewModel.validateRoutine(context, name, description)
             if (!result.isSuccess) {
                 if (result.error!!.property == SpotHomeViewModel.ROUTINE_NAME_PROPERTY) {
-                    nameIsError.value = true
-                    descriptionIsError.value = false
+                    nameIsError = true
+                    descriptionIsError = false
                 } else if (result.error.property == SpotHomeViewModel.ROUTINE_DESCRIPTION_PROPERTY) {
-                    nameIsError.value = false
-                    descriptionIsError.value = true
+                    nameIsError = false
+                    descriptionIsError = true
                 }
             } else {
-                nameIsError.value = false
-                descriptionIsError.value = false
+                nameIsError = false
+                descriptionIsError = false
             }
             result
         },
         onPositiveClick = {
-            val routine = Routine(name = name.value, description = description.value)
+            val routine = Routine(name = name, description = description)
             viewModel.addRoutine(routine)
         },
+        modifier = Modifier
+            .padding(35.dp)
+            .fillMaxWidth()
+            .wrapContentWidth()
     ) {
         DialogValidationTextField(
             label = stringResource(R.string.routine_name),
             value = name,
             isError = nameIsError,
-            testTag = "nameField"
+            onValueChanged = {
+                name = it
+                nameIsError = false
+            },
+            modifier = Modifier.testTag("nameField")
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.routine_description),
             value = description,
             isError = descriptionIsError,
-            testTag = "descField"
+            onValueChanged = {
+                description = it
+                descriptionIsError = false
+            },
+            modifier = Modifier.testTag("descField")
         )
     }
 }

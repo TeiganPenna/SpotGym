@@ -7,20 +7,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,13 +26,16 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.spotgym.spot.R
 
+typealias SetShowDialog = (Boolean) -> Unit
+
 @Composable
 @ExperimentalComposeUiApi
 fun SpotDialog(
     title: String,
-    setShowDialog: (Boolean) -> Unit,
+    setShowDialog: SetShowDialog,
     onPositiveClick: () -> Unit,
     validate: () -> ValidationResult,
+    modifier: Modifier = Modifier,
     content: @Composable
     () -> Unit,
 ) {
@@ -43,14 +43,11 @@ fun SpotDialog(
 
     Dialog(
         onDismissRequest = { setShowDialog(false) },
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Card(
             elevation = 10.dp,
-            modifier = Modifier
-                .padding(35.dp)
-                .fillMaxWidth()
-                .wrapContentWidth()
+            modifier = modifier,
         ) {
             Column(
                 modifier = Modifier.padding(15.dp),
@@ -84,20 +81,18 @@ fun SpotDialog(
 @Composable
 fun DialogValidationTextField(
     label: String,
-    value: MutableState<String>,
-    isError: MutableState<Boolean>,
-    testTag: String? = null
+    value: String,
+    isError: Boolean,
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     TextField(
         label = { Text(label) },
-        value = value.value,
-        onValueChange = {
-            value.value = it
-            isError.value = false
-        },
-        isError = isError.value,
+        value = value,
+        onValueChange = onValueChanged,
+        isError = isError,
         singleLine = true,
-        modifier = Modifier.then(if (testTag != null) Modifier.testTag(testTag) else Modifier)
+        modifier = modifier,
     )
 }
 

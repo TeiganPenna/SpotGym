@@ -1,8 +1,12 @@
 package com.spotgym.spot.home
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
@@ -117,18 +121,18 @@ class SpotDialogTest {
         onPositiveClick: () -> Unit,
     ) {
         composeTestRule.setContent {
-            val field = remember { mutableStateOf("") }
-            val fieldIsError = remember { mutableStateOf(false) }
+            var field by remember { mutableStateOf("") }
+            var fieldIsError by remember { mutableStateOf(false) }
 
             SpotDialog(
                 title = "some title",
                 setShowDialog = setShowDialog,
                 validate = {
-                    if (field.value.isBlank()) {
-                        fieldIsError.value = true
+                    if (field.isBlank()) {
+                        fieldIsError = true
                         ValidationResult.failure("some error", "field")
                     } else {
-                        fieldIsError.value = false
+                        fieldIsError = false
                         ValidationResult.success
                     }
                 },
@@ -138,7 +142,11 @@ class SpotDialogTest {
                     label = "some field",
                     value = field,
                     isError = fieldIsError,
-                    testTag = "textField"
+                    onValueChanged = {
+                        field = it
+                        fieldIsError = false
+                    },
+                    modifier = Modifier.testTag("textField"),
                 )
             }
         }
@@ -146,13 +154,17 @@ class SpotDialogTest {
 
     private fun setUpValidationTextField(value: String, isError: Boolean) {
         composeTestRule.setContent {
-            val mutableValue = remember { mutableStateOf(value) }
-            val mutableIsError = remember { mutableStateOf(isError) }
+            var mutableValue by remember { mutableStateOf(value) }
+            var mutableIsError by remember { mutableStateOf(isError) }
             DialogValidationTextField(
                 label = "some field",
                 value = mutableValue,
                 isError = mutableIsError,
-                testTag = "textField",
+                onValueChanged = {
+                    mutableValue = it
+                    mutableIsError = false
+                },
+                modifier = Modifier.testTag("textField"),
             )
         }
     }
