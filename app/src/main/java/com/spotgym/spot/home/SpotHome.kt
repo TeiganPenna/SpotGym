@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -55,17 +56,17 @@ fun SpotHome(
     if (routines == null) {
         SpotLoadingPage(modifier)
     } else {
-        val showAddDialog = remember { mutableStateOf(false) }
-        if (showAddDialog.value) {
+        var showAddDialog by remember { mutableStateOf(false) }
+        if (showAddDialog) {
             AddRoutineDialog(
                 viewModel = viewModel,
-                setShowDialog = { showAddDialog.value = it },
+                setShowDialog = { showAddDialog = it },
             )
         }
 
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = { showAddDialog.value = true }) {
+                FloatingActionButton(onClick = { showAddDialog = true }) {
                     Icon(Icons.Filled.Add, stringResource(R.string.routines_add_routine_description))
                 }
             },
@@ -101,33 +102,33 @@ private fun AddRoutineDialog(
 ) {
     val context = LocalContext.current
 
-    val name = remember { mutableStateOf("") }
-    val nameIsError = remember { mutableStateOf(false) }
+    var name by remember { mutableStateOf("") }
+    var nameIsError by remember { mutableStateOf(false) }
 
-    val description = remember { mutableStateOf("") }
-    val descriptionIsError = remember { mutableStateOf(false) }
+    var description by remember { mutableStateOf("") }
+    var descriptionIsError by remember { mutableStateOf(false) }
 
     SpotDialog(
         title = stringResource(R.string.routines_add_routine),
         setShowDialog = setShowDialog,
         validate = {
-            val result = viewModel.validateRoutine(context, name.value, description.value)
+            val result = viewModel.validateRoutine(context, name, description)
             if (!result.isSuccess) {
                 if (result.error!!.property == SpotHomeViewModel.ROUTINE_NAME_PROPERTY) {
-                    nameIsError.value = true
-                    descriptionIsError.value = false
+                    nameIsError = true
+                    descriptionIsError = false
                 } else if (result.error.property == SpotHomeViewModel.ROUTINE_DESCRIPTION_PROPERTY) {
-                    nameIsError.value = false
-                    descriptionIsError.value = true
+                    nameIsError = false
+                    descriptionIsError = true
                 }
             } else {
-                nameIsError.value = false
-                descriptionIsError.value = false
+                nameIsError = false
+                descriptionIsError = false
             }
             result
         },
         onPositiveClick = {
-            val routine = Routine(name = name.value, description = description.value)
+            val routine = Routine(name = name, description = description)
             viewModel.addRoutine(routine)
         },
         modifier = Modifier
@@ -137,22 +138,22 @@ private fun AddRoutineDialog(
     ) {
         DialogValidationTextField(
             label = stringResource(R.string.routine_name),
-            value = name.value,
-            isError = nameIsError.value,
+            value = name,
+            isError = nameIsError,
             onValueChanged = {
-                name.value = it
-                nameIsError.value = false
+                name = it
+                nameIsError = false
             },
             modifier = Modifier.testTag("nameField")
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.routine_description),
-            value = description.value,
-            isError = descriptionIsError.value,
+            value = description,
+            isError = descriptionIsError,
             onValueChanged = {
-                description.value = it
-                descriptionIsError.value = false
+                description = it
+                descriptionIsError = false
             },
             modifier = Modifier.testTag("descField")
         )
