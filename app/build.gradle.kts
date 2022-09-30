@@ -66,6 +66,8 @@ detekt {
 }
 
 dependencies {
+    detektPlugins("com.twitter.compose.rules:detekt:${Versions.DETEKT_TWITTER}")
+
     kapt("androidx.room:room-compiler:${Versions.ROOM}")
     implementation("androidx.core:core-ktx:${Versions.KTX}")
     implementation("androidx.hilt:hilt-navigation-compose:${Versions.HILT_NAVIGATION}")

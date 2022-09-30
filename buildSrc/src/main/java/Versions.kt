@@ -4,6 +4,8 @@ object Versions {
     const val MIN_SDK = 30
     const val TARGET_SDK = 30
 
+    const val DETEKT_TWITTER = "0.0.16"
+
     // App dependencies
     const val ACTIVITY_COMPOSE = "1.5.1"
     const val ANIMATED_NAVIGATION = "0.25.1"
