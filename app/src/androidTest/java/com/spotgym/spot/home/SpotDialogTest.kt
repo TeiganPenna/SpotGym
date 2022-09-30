@@ -138,8 +138,12 @@ class SpotDialogTest {
             ) {
                 DialogValidationTextField(
                     label = "some field",
-                    value = field,
-                    isError = fieldIsError,
+                    value = field.value,
+                    isError = fieldIsError.value,
+                    onValueChanged = {
+                        field.value = it
+                        fieldIsError.value = false
+                    },
                     modifier = Modifier.testTag("textField"),
                 )
             }
@@ -152,8 +156,12 @@ class SpotDialogTest {
             val mutableIsError = remember { mutableStateOf(isError) }
             DialogValidationTextField(
                 label = "some field",
-                value = mutableValue,
-                isError = mutableIsError,
+                value = mutableValue.value,
+                isError = mutableIsError.value,
+                onValueChanged = {
+                    mutableValue.value = it
+                    mutableIsError.value = false
+                },
                 modifier = Modifier.testTag("textField"),
             )
         }

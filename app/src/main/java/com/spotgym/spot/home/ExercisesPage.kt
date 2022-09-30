@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -57,8 +56,8 @@ fun ExercisesPage(
         if (showAddDialog.value) {
             AddExerciseDialog(
                 viewModel = viewModel,
-                routine.id,
-                showDialog = showAddDialog,
+                routineId = routine.id,
+                setShowDialog = { showAddDialog.value = it }
             )
         }
 
@@ -102,7 +101,7 @@ fun ExercisesPage(
 private fun AddExerciseDialog(
     viewModel: ExercisesViewModel,
     routineId: Int,
-    showDialog: MutableState<Boolean>,
+    setShowDialog: SetShowDialog,
 ) {
     val context = LocalContext.current
 
@@ -114,7 +113,7 @@ private fun AddExerciseDialog(
 
     SpotDialog(
         title = stringResource(R.string.exercises_add_exercise),
-        setShowDialog = { showDialog.value = it },
+        setShowDialog = setShowDialog,
         validate = {
             val result = viewModel.validateExercise(context, name.value, description.value)
             if (!result.isSuccess) {
@@ -142,15 +141,23 @@ private fun AddExerciseDialog(
     ) {
         DialogValidationTextField(
             label = stringResource(R.string.exercise_name),
-            value = name,
-            isError = nameIsError,
+            value = name.value,
+            isError = nameIsError.value,
+            onValueChanged = {
+                name.value = it
+                nameIsError.value = false
+            },
             modifier = Modifier.testTag("nameField")
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.exercise_description),
-            value = description,
-            isError = descriptionIsError,
+            value = description.value,
+            isError = descriptionIsError.value,
+            onValueChanged = {
+                description.value = it
+                descriptionIsError.value = false
+            },
             modifier = Modifier.testTag("descField")
         )
     }

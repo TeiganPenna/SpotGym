@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,11 +26,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.spotgym.spot.R
 
+typealias SetShowDialog = (Boolean) -> Unit
+
 @Composable
 @ExperimentalComposeUiApi
 fun SpotDialog(
     title: String,
-    setShowDialog: (Boolean) -> Unit,
+    setShowDialog: SetShowDialog,
     onPositiveClick: () -> Unit,
     validate: () -> ValidationResult,
     modifier: Modifier = Modifier,
@@ -80,18 +81,16 @@ fun SpotDialog(
 @Composable
 fun DialogValidationTextField(
     label: String,
-    value: MutableState<String>,
-    isError: MutableState<Boolean>,
+    value: String,
+    isError: Boolean,
+    onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     TextField(
         label = { Text(label) },
-        value = value.value,
-        onValueChange = {
-            value.value = it
-            isError.value = false
-        },
-        isError = isError.value,
+        value = value,
+        onValueChange = onValueChanged,
+        isError = isError,
         singleLine = true,
         modifier = modifier,
     )

@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,7 +59,7 @@ fun SpotHome(
         if (showAddDialog.value) {
             AddRoutineDialog(
                 viewModel = viewModel,
-                showDialog = showAddDialog,
+                setShowDialog = { showAddDialog.value = it },
             )
         }
 
@@ -98,7 +97,7 @@ fun SpotHome(
 @ExperimentalComposeUiApi
 private fun AddRoutineDialog(
     viewModel: SpotHomeViewModel,
-    showDialog: MutableState<Boolean>,
+    setShowDialog: SetShowDialog,
 ) {
     val context = LocalContext.current
 
@@ -110,7 +109,7 @@ private fun AddRoutineDialog(
 
     SpotDialog(
         title = stringResource(R.string.routines_add_routine),
-        setShowDialog = { showDialog.value = it },
+        setShowDialog = setShowDialog,
         validate = {
             val result = viewModel.validateRoutine(context, name.value, description.value)
             if (!result.isSuccess) {
@@ -138,15 +137,23 @@ private fun AddRoutineDialog(
     ) {
         DialogValidationTextField(
             label = stringResource(R.string.routine_name),
-            value = name,
-            isError = nameIsError,
+            value = name.value,
+            isError = nameIsError.value,
+            onValueChanged = {
+                name.value = it
+                nameIsError.value = false
+            },
             modifier = Modifier.testTag("nameField")
         )
 
         DialogValidationTextField(
             label = stringResource(R.string.routine_description),
-            value = description,
-            isError = descriptionIsError,
+            value = description.value,
+            isError = descriptionIsError.value,
+            onValueChanged = {
+                description.value = it
+                descriptionIsError.value = false
+            },
             modifier = Modifier.testTag("descField")
         )
     }
