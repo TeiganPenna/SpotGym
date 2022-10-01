@@ -91,7 +91,6 @@ jobs:
 
   instrumentation-tests:
     name: Instrumentation tests
-    if: ${{ false }} # disable for now
     runs-on: macos-latest # use macos to take advantage of haxm
     timeout-minutes: 30
     steps:
@@ -141,7 +140,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew connectedCheck
+          script: ./gradlew connectedCheck -Pandroid.testInstrumentationRunnerArguments.notAnnotation=com.spotgym.spot.Explicit
 
       - name: Upload reports
         uses: actions/upload-artifact@v2
@@ -176,7 +175,7 @@ jobs:
     name: Build and Sign APK
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [checks, unit-tests] # instrumentation-tests
+    needs: [checks, unit-tests, instrumentation-tests]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v3
