@@ -228,12 +228,14 @@ class ExercisesPageTest {
         composeTestRule.onNodeWithTag("descField").performTextInput("Bar")
         composeTestRule.onNodeWithText("OK").performClick()
 
-        // can't test the new routine showing without JUnit5 and MainCoroutineExtension
         val exercises = exerciseDao.getAll()
         assertThat(exercises).hasSize(1)
         assertThat(exercises[0].routineId).isEqualTo(TEST_ROUTINE_ID)
         assertThat(exercises[0].name).isEqualTo("Foo")
         assertThat(exercises[0].description).isEqualTo("Bar")
+
+        composeTestRule.onNodeWithText("Foo").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Bar").assertIsDisplayed()
     }
 
     @Test
@@ -248,7 +250,6 @@ class ExercisesPageTest {
         composeTestRule.onNodeWithTag("descField").performTextInput(" Bar\r\n")
         composeTestRule.onNodeWithText("OK").performClick()
 
-        // can't test the new routine showing without JUnit5 and MainCoroutineExtension
         val exercises = exerciseDao.getAll()
         assertThat(exercises).hasSize(1)
         assertThat(exercises[0].routineId).isEqualTo(TEST_ROUTINE_ID)
