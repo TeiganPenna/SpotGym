@@ -236,6 +236,26 @@ class ExercisesPageTest {
         assertThat(exercises[0].description).isEqualTo("Bar")
     }
 
+    @Test
+    fun `when exercise added should trim name and description`(): Unit = runBlocking {
+        routineDao.insert(testRoutine)
+
+        setUpExercisesPage()
+
+        composeTestRule.onNodeWithContentDescription("Add exercise").performClick()
+
+        composeTestRule.onNodeWithTag("nameField").performTextInput("\tFoo   ")
+        composeTestRule.onNodeWithTag("descField").performTextInput(" Bar\r\n")
+        composeTestRule.onNodeWithText("OK").performClick()
+
+        // can't test the new routine showing without JUnit5 and MainCoroutineExtension
+        val exercises = exerciseDao.getAll()
+        assertThat(exercises).hasSize(1)
+        assertThat(exercises[0].routineId).isEqualTo(TEST_ROUTINE_ID)
+        assertThat(exercises[0].name).isEqualTo("Foo")
+        assertThat(exercises[0].description).isEqualTo("Bar")
+    }
+
     private fun setUpExercisesPage() {
         composeTestRule.setContent {
             ExercisesPage(

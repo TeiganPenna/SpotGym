@@ -202,6 +202,23 @@ class SpotHomeTest {
         assertThat(routines[0].description).isEqualTo("Bar")
     }
 
+    @Test
+    fun `when routine added should trim name and description`(): Unit = runBlocking {
+        setUpHome()
+
+        composeTestRule.onNodeWithContentDescription("Add routine").performClick()
+
+        composeTestRule.onNodeWithTag("nameField").performTextInput("\tFoo   ")
+        composeTestRule.onNodeWithTag("descField").performTextInput(" Bar\r\n")
+        composeTestRule.onNodeWithText("OK").performClick()
+
+        // can't test the new routine showing without JUnit5 and MainCoroutineExtension
+        val routines = routineDao.getAll()
+        assertThat(routines).hasSize(1)
+        assertThat(routines[0].name).isEqualTo("Foo")
+        assertThat(routines[0].description).isEqualTo("Bar")
+    }
+
     private fun setUpHome(
         onRoutineClicked: OnRoutineClicked = {},
     ) {
