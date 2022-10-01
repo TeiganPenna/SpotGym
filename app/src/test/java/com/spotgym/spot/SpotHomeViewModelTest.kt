@@ -85,13 +85,33 @@ class SpotHomeViewModelTest {
         val loadedRoutines = viewModel.routines.value
         assertThat(loadedRoutines).isEmpty()
 
-        val routine = Routine(name = "Some Routine", description = "some description")
-        viewModel.addRoutine(routine)
+        viewModel.addRoutine("Some Routine", "some description")
 
-        coVerify { repositoryMock.addRoutine(routine) }
+        coVerify { repositoryMock.addRoutine(any()) }
 
         assertThat(loadedRoutines).hasSize(1)
-        assertThat(loadedRoutines!![0]).isEqualTo(routine)
+
+        assertThat(routines[0].name).isEqualTo("Some Routine")
+        assertThat(routines[0].description).isEqualTo("some description")
+    }
+
+    @Test
+    fun `addRoutine trims name and description`() = runTest {
+        val routines = mutableListOf<Routine>()
+        coEvery { repositoryMock.getAllRoutines() } returns routines
+        coEvery { repositoryMock.addRoutine(any()) } answers {
+            routines.add(firstArg())
+        }
+
+        viewModel.addRoutine(
+            "\tSome Routine   ",
+            " some description\r\n"
+        )
+
+        coVerify { repositoryMock.addRoutine(any()) }
+
+        assertThat(routines[0].name).isEqualTo("Some Routine")
+        assertThat(routines[0].description).isEqualTo("some description")
     }
 
     @ParameterizedTest

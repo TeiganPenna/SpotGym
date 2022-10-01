@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -84,7 +85,8 @@ fun DialogValidationTextField(
     value: String,
     isError: Boolean,
     onValueChanged: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
 ) {
     TextField(
         label = { Text(label) },
@@ -92,6 +94,7 @@ fun DialogValidationTextField(
         onValueChange = onValueChanged,
         isError = isError,
         singleLine = true,
+        keyboardOptions = keyboardOptions,
         modifier = modifier,
     )
 }

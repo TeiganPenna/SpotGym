@@ -24,8 +24,12 @@ class SpotHomeViewModel @Inject constructor(
         _routines.value = routineRepository.getAllRoutines()
     }
 
-    fun addRoutine(routine: Routine) {
+    fun addRoutine(name: String, description: String) {
         viewModelScope.launch {
+            val routine = Routine(
+                name = name.trim(),
+                description = description.trim(),
+            )
             routineRepository.addRoutine(routine)
             loadRoutines()
         }

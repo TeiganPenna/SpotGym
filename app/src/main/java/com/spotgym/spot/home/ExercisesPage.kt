@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -30,11 +31,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
-import com.spotgym.spot.data.Exercise
 
 @Composable
 @ExperimentalComposeUiApi
@@ -132,10 +133,7 @@ private fun AddExerciseDialog(
             }
             result
         },
-        onPositiveClick = {
-            val exercise = Exercise(name = name, description = description, routineId = routineId)
-            viewModel.addExercise(context, routineId, exercise)
-        },
+        onPositiveClick = { viewModel.addExercise(context, routineId, name, description) },
         modifier = Modifier
             .padding(35.dp)
             .fillMaxWidth()
@@ -149,6 +147,7 @@ private fun AddExerciseDialog(
                 name = it
                 nameIsError = false
             },
+            keyboardOptions = KeyboardOptions(KeyboardCapitalization.Words),
             modifier = Modifier.testTag("nameField")
         )
 
@@ -160,6 +159,7 @@ private fun AddExerciseDialog(
                 description = it
                 descriptionIsError = false
             },
+            keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
             modifier = Modifier.testTag("descField")
         )
     }

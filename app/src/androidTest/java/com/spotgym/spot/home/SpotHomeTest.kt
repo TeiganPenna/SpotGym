@@ -1,79 +1,74 @@
 package com.spotgym.spot.home
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasProgressBarRangeInfo
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.room.Room
+import androidx.test.platform.app.InstrumentationRegistry
 import com.spotgym.spot.data.Routine
-import com.spotgym.spot.data.RoutineRepository
+import com.spotgym.spot.data.RoutineRepositoryImpl
+import com.spotgym.spot.data.room.RoutineDao
+import com.spotgym.spot.data.room.SpotDatabase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doAnswer
-import org.mockito.kotlin.whenever
 
-@RunWith(MockitoJUnitRunner::class)
 @ExperimentalComposeUiApi
 @ExperimentalCoroutinesApi
 class SpotHomeTest {
 
     @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
     val composeTestRule = createComposeRule()
 
-    @Mock
-    lateinit var routineRepositoryMock: RoutineRepository
-
+    private lateinit var db: SpotDatabase
+    private lateinit var routineDao: RoutineDao
     private lateinit var viewModel: SpotHomeViewModel
 
     @Before
     fun before() {
-        viewModel = SpotHomeViewModel(routineRepositoryMock)
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        db = Room.inMemoryDatabaseBuilder(
+            context,
+            SpotDatabase::class.java
+        )
+            .allowMainThreadQueries()
+            .build()
+        routineDao = db.routineDao()
+
+        val routineRepository = RoutineRepositoryImpl(routineDao)
+        viewModel = SpotHomeViewModel(routineRepository)
+    }
+
+    @After
+    fun after() {
+        db.close()
     }
 
     @Test
-    fun `shows loading icon when no routines are loaded`() {
-        setUpHome(
-            onRoutineClicked = {}
-        )
-
-        composeTestRule
-            .onNode(hasProgressBarRangeInfo(ProgressBarRangeInfo(0.0F, 0.0F..0.0F, 0)))
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun `when loaded shows title`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(emptyList())
-
-        setUpHome(
-            onRoutineClicked = {}
-        )
+    fun `when loaded shows title`(): Unit = runBlocking {
+        setUpHome()
 
         composeTestRule.onNodeWithText("Routines").assertIsDisplayed()
     }
 
     @Test
-    fun `when loaded shows add button`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(emptyList())
-
-        setUpHome(
-            onRoutineClicked = {}
-        )
+    fun `when loaded shows add button`(): Unit = runBlocking {
+        setUpHome()
 
         composeTestRule
             .onNodeWithContentDescription("Add routine")
@@ -82,17 +77,11 @@ class SpotHomeTest {
     }
 
     @Test
-    fun `when loads routines should display them`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(
-            listOf(
-                Routine(name = "Foo", description = "Some description"),
-                Routine(name = "Bar", description = "Some other description")
-            )
-        )
+    fun `when loads routines should display them`(): Unit = runBlocking {
+        routineDao.insert(Routine(name = "Foo", description = "Some description"))
+        routineDao.insert(Routine(name = "Bar", description = "Some other description"))
 
-        setUpHome(
-            onRoutineClicked = {}
-        )
+        setUpHome()
 
         composeTestRule.onNodeWithText("Foo").assertIsDisplayed().assertHasClickAction()
         composeTestRule.onNodeWithText("Some description").assertIsDisplayed().assertHasClickAction()
@@ -101,12 +90,8 @@ class SpotHomeTest {
     }
 
     @Test
-    fun `when loads routine clicked should navigate with id`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(
-            listOf(
-                Routine(id = 4, name = "Foo", description = "Some description"),
-            )
-        )
+    fun `when loads routine clicked should navigate with id`(): Unit = runBlocking {
+        routineDao.insert(Routine(id = 4, name = "Foo", description = "Some description"))
 
         var routineId: Int? = null
 
@@ -119,12 +104,8 @@ class SpotHomeTest {
     }
 
     @Test
-    fun `when adding routine should display dialog`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(emptyList())
-
-        setUpHome(
-            onRoutineClicked = {}
-        )
+    fun `when adding routine should display dialog`(): Unit = runBlocking {
+        setUpHome()
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
@@ -134,36 +115,22 @@ class SpotHomeTest {
     }
 
     @Test
-    fun `when cancelled add should do nothing`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(emptyList())
-        var routine: Routine? = null
-        whenever(routineRepositoryMock.addRoutine(any())).doAnswer {
-            routine = it.arguments[0] as Routine
-        }
-
-        setUpHome(
-            onRoutineClicked = {}
-        )
+    fun `when cancelled add should do nothing`(): Unit = runBlocking {
+        setUpHome()
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
         composeTestRule.onNodeWithTag("nameField").performTextInput("Foo")
         composeTestRule.onNodeWithTag("descField").performTextInput("Bar")
         composeTestRule.onNodeWithText("Cancel").performClick()
-        assertThat(routine).isNull()
+
+        val routines = routineDao.getAll()
+        assertThat(routines).isEmpty()
     }
 
     @Test
-    fun `when try to add and no name should show error`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(emptyList())
-        var routine: Routine? = null
-        whenever(routineRepositoryMock.addRoutine(any())).doAnswer {
-            routine = it.arguments[0] as Routine
-        }
-
-        setUpHome(
-            onRoutineClicked = {}
-        )
+    fun `when try to add and no name should show error`(): Unit = runBlocking {
+        setUpHome()
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
@@ -175,20 +142,14 @@ class SpotHomeTest {
         assertThat(
             getSemanticValueForNodeWithTag(composeTestRule, "nameField", SemanticsProperties.Error)
         ).isEqualTo("Invalid input")
-        assertThat(routine).isNull()
+
+        val routines = routineDao.getAll()
+        assertThat(routines).isEmpty()
     }
 
     @Test
-    fun `when try to add and no desc should show error`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(emptyList())
-        var routine: Routine? = null
-        whenever(routineRepositoryMock.addRoutine(any())).doAnswer {
-            routine = it.arguments[0] as Routine
-        }
-
-        setUpHome(
-            onRoutineClicked = {}
-        )
+    fun `when try to add and no desc should show error`(): Unit = runBlocking {
+        setUpHome()
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
@@ -200,20 +161,14 @@ class SpotHomeTest {
         assertThat(
             getSemanticValueForNodeWithTag(composeTestRule, "descField", SemanticsProperties.Error)
         ).isEqualTo("Invalid input")
-        assertThat(routine).isNull()
+
+        val routines = routineDao.getAll()
+        assertThat(routines).isEmpty()
     }
 
     @Test
-    fun `when try to add and routine is empty should show error`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(emptyList())
-        var routine: Routine? = null
-        whenever(routineRepositoryMock.addRoutine(any())).doAnswer {
-            routine = it.arguments[0] as Routine
-        }
-
-        setUpHome(
-            onRoutineClicked = {}
-        )
+    fun `when try to add and routine is empty should show error`(): Unit = runBlocking {
+        setUpHome()
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
@@ -225,20 +180,14 @@ class SpotHomeTest {
         assertThat(
             getSemanticValueForNodeWithTag(composeTestRule, "nameField", SemanticsProperties.Error)
         ).isEqualTo("Invalid input")
-        assertThat(routine).isNull()
+
+        val routines = routineDao.getAll()
+        assertThat(routines).isEmpty()
     }
 
     @Test
-    fun `when routine added should display the new routine`() = runTest {
-        whenever(routineRepositoryMock.getAllRoutines()).thenReturn(emptyList())
-        var routine: Routine? = null
-        whenever(routineRepositoryMock.addRoutine(any())).doAnswer {
-            routine = it.arguments[0] as Routine
-        }
-
-        setUpHome(
-            onRoutineClicked = {}
-        )
+    fun `when routine added should display the new routine`(): Unit = runBlocking {
+        setUpHome()
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
@@ -246,13 +195,33 @@ class SpotHomeTest {
         composeTestRule.onNodeWithTag("descField").performTextInput("Bar")
         composeTestRule.onNodeWithText("OK").performClick()
 
-        // can't test the new routine showing without JUnit5 and MainCoroutineExtension
-        assertThat(routine!!.name).isEqualTo("Foo")
-        assertThat(routine!!.description).isEqualTo("Bar")
+        val routines = routineDao.getAll()
+        assertThat(routines).hasSize(1)
+        assertThat(routines[0].name).isEqualTo("Foo")
+        assertThat(routines[0].description).isEqualTo("Bar")
+
+        composeTestRule.onNodeWithText("Foo").assertIsDisplayed().assertHasClickAction()
+        composeTestRule.onNodeWithText("Bar").assertIsDisplayed().assertHasClickAction()
+    }
+
+    @Test
+    fun `when routine added should trim name and description`(): Unit = runBlocking {
+        setUpHome()
+
+        composeTestRule.onNodeWithContentDescription("Add routine").performClick()
+
+        composeTestRule.onNodeWithTag("nameField").performTextInput("\tFoo   ")
+        composeTestRule.onNodeWithTag("descField").performTextInput(" Bar\r\n")
+        composeTestRule.onNodeWithText("OK").performClick()
+
+        val routines = routineDao.getAll()
+        assertThat(routines).hasSize(1)
+        assertThat(routines[0].name).isEqualTo("Foo")
+        assertThat(routines[0].description).isEqualTo("Bar")
     }
 
     private fun setUpHome(
-        onRoutineClicked: OnRoutineClicked,
+        onRoutineClicked: OnRoutineClicked = {},
     ) {
         composeTestRule.setContent {
             SpotHome(

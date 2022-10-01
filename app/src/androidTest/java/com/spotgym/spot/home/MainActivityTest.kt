@@ -1,5 +1,6 @@
 package com.spotgym.spot.home
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -7,14 +8,13 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import com.spotgym.spot.Explicit
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@Explicit
 @HiltAndroidTest
 class MainActivityTest {
 
@@ -24,13 +24,16 @@ class MainActivityTest {
     @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
+    @get:Rule(order = 3)
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     @Before
     fun before() {
         hiltTestRule.inject()
     }
 
     @Test
-    fun `create and store some routines with exercises`() {
+    fun `create and store some routines with exercises`(): Unit = runBlocking {
         // add leg day routine
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
         composeTestRule.onNodeWithTag("nameField").performTextInput("Leg Day")

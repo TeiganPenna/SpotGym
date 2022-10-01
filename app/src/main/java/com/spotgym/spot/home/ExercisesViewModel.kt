@@ -39,9 +39,15 @@ class ExercisesViewModel @Inject constructor(
     fun addExercise(
         context: Context,
         routineId: Int,
-        exercise: Exercise
+        name: String,
+        description: String,
     ) {
         viewModelScope.launch {
+            val exercise = Exercise(
+                name = name.trim(),
+                description = description.trim(),
+                routineId = routineId,
+            )
             exerciseRepository.addExercise(exercise)
             loadRoutineData(context, routineId)
         }
