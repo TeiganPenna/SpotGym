@@ -85,8 +85,8 @@ fun DialogValidationTextField(
     value: String,
     isError: Boolean,
     onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
-    modifier: Modifier = Modifier
 ) {
     TextField(
         label = { Text(label) },
