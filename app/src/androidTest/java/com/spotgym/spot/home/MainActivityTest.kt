@@ -14,6 +14,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+// TODO try composeTestRule.awaitIdle() + runBlocking + InstantTaskExecutorRule?
 @Explicit
 @HiltAndroidTest
 class MainActivityTest {
