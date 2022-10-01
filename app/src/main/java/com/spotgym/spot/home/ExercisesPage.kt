@@ -133,7 +133,7 @@ private fun AddExerciseDialog(
             result
         },
         onPositiveClick = {
-            val exercise = Exercise(name = name, description = description, routineId = routineId)
+            val exercise = Exercise(name = name.trim(), description = description.trim(), routineId = routineId)
             viewModel.addExercise(context, routineId, exercise)
         },
         modifier = Modifier

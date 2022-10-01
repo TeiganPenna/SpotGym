@@ -128,7 +128,7 @@ private fun AddRoutineDialog(
             result
         },
         onPositiveClick = {
-            val routine = Routine(name = name, description = description)
+            val routine = Routine(name = name.trim(), description = description.trim())
             viewModel.addRoutine(routine)
         },
         modifier = Modifier
