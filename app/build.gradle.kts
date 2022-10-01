@@ -6,6 +6,7 @@ plugins {
     kotlin("kapt")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlin-kapt")
 }
 
 android {
