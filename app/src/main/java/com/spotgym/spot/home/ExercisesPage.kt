@@ -34,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
-import com.spotgym.spot.data.Exercise
 
 @Composable
 @ExperimentalComposeUiApi
@@ -132,10 +131,7 @@ private fun AddExerciseDialog(
             }
             result
         },
-        onPositiveClick = {
-            val exercise = Exercise(name = name.trim(), description = description.trim(), routineId = routineId)
-            viewModel.addExercise(context, routineId, exercise)
-        },
+        onPositiveClick = { viewModel.addExercise(context, routineId, name, description) },
         modifier = Modifier
             .padding(35.dp)
             .fillMaxWidth()
