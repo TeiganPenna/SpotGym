@@ -114,6 +114,34 @@ class SpotHomeViewModelTest {
         assertThat(routines[0].description).isEqualTo("some description")
     }
 
+    @Test
+    fun `deleteRoutine deletes from the repository and reloads`() = runTest {
+        val routine1 = Routine(name = "Routine 1", description = "Description 1")
+        val routines = mutableListOf(
+            routine1,
+            Routine(name = "Routine 2", description = "Description 2"),
+            Routine(name = "Routine 3", description = "Description 3"),
+        )
+        coEvery { repositoryMock.getAllRoutines() } returns routines
+        coEvery { repositoryMock.deleteRoutine(any()) } answers {
+            routines.remove(firstArg())
+        }
+
+        viewModel.loadRoutines()
+
+        val loadedRoutines = viewModel.routines.value
+        assertThat(loadedRoutines).hasSize(3)
+
+        viewModel.deleteRoutine(routine1)
+
+        coVerify { repositoryMock.deleteRoutine(routine1) }
+
+        assertThat(loadedRoutines).hasSize(2)
+
+        assertThat(routines[0].name).isEqualTo("Routine 2")
+        assertThat(routines[1].name).isEqualTo("Routine 3")
+    }
+
     @ParameterizedTest
     @MethodSource("validationTestData")
     fun `routine validation`(
