@@ -56,6 +56,7 @@ class ExerciseDaoTest {
     fun `get all exercises`(): Unit = runBlocking {
         val exerciseList = exerciseDao.getAll()
 
+        assertThat(exerciseList).hasSize(3)
         assertThat(exerciseList[0]).isEqualTo(exercise1)
         assertThat(exerciseList[1]).isEqualTo(exercise2)
         assertThat(exerciseList[2]).isEqualTo(exercise3)
@@ -85,5 +86,19 @@ class ExerciseDaoTest {
         routineWithExercises = exerciseDao.getRoutineWithExercises(3)
         assertThat(routineWithExercises!!.routine.id).isEqualTo(3)
         assertThat(routineWithExercises.exercises).isEmpty()
+    }
+
+    @Test
+    fun `delete routine and all its related exercises`(): Unit = runBlocking {
+        routineDao.delete(routine1)
+
+        val routineList = routineDao.getAll()
+        assertThat(routineList).hasSize(2)
+        assertThat(routineList[0]).isEqualTo(routine2)
+        assertThat(routineList[1]).isEqualTo(routine3)
+
+        val exerciseList = exerciseDao.getAll()
+        assertThat(exerciseList).hasSize(1)
+        assertThat(exerciseList[0]).isEqualTo(exercise3)
     }
 }
