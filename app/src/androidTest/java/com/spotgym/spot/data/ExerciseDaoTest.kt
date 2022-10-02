@@ -71,7 +71,7 @@ class ExerciseDaoTest {
     }
 
     @Test
-    fun `get Routine with exercises`(): Unit = runBlocking {
+    fun `get routine with exercises`(): Unit = runBlocking {
         var routineWithExercises = exerciseDao.getRoutineWithExercises(1)
         assertThat(routineWithExercises!!.routine.id).isEqualTo(1)
         assertThat(routineWithExercises.exercises).hasSize(2)

@@ -4,6 +4,8 @@
     <string name="routines_title">Routines</string>
     <string name="routines_add_routine_description">Add routine</string>
     <string name="routines_add_routine">Add Routine</string>
+    <string name="routines_dismiss_title">Delete routine?</string>
+    <string name="routines_dismiss_body">\'%s\' routine and all its exercises will be deleted forever.</string>
 
     <string name="routine_name">Name</string>
     <string name="routine_description">Description</string>
