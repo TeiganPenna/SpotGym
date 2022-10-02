@@ -16,4 +16,8 @@
     <string name="exercise_name">Name</string>
 
     <string name="validation_value_empty">%s cannot be empty</string>
+
+    <string name="spot_card_delete">Delete card</string>
+
+    <string name="delete">Delete</string>
 </resources>
