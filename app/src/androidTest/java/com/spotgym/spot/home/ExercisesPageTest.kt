@@ -272,7 +272,7 @@ class ExercisesPageTest {
 
         composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
 
-        composeTestRule.onNodeWithText("Delete exercise?").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Delete 'Foo'?").assertIsDisplayed()
         composeTestRule.onNodeWithText("'Foo' exercise will be deleted forever.").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").assertIsDisplayed().assertHasClickAction()
         composeTestRule.onNodeWithText("Delete").assertIsDisplayed().assertHasClickAction()

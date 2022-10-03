@@ -181,7 +181,7 @@ private fun RoutineCard(
     SpotDismissibleCard(
         onCardClicked = { onRoutineClicked(routine.id) },
         onDismissed = onDismissed,
-        confirmTitle = stringResource(R.string.routines_dismiss_title),
+        confirmTitle = stringResource(R.string.routines_dismiss_title, routine.name),
         confirmBody = stringResource(R.string.routines_dismiss_body, routine.name),
         modifier = Modifier.padding(5.dp)
     ) {
