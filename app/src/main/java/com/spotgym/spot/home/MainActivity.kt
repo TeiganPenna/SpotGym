@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -20,6 +21,7 @@ class MainActivity : ComponentActivity() {
 
     @ExperimentalAnimationApi
     @ExperimentalComposeUiApi
+    @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

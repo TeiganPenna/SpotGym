@@ -139,6 +139,35 @@ class ExercisesViewModelTest {
         assertThat(exercises[0].description).isEqualTo("some description")
     }
 
+    @Test
+    fun `deleteExercise deletes from the repository and reloads`() = runTest {
+        val exercise1 = Exercise(name = "Exercise 1", description = "Description 1", routineId = testRoutine.id)
+        val exercises = mutableListOf(
+            exercise1,
+            Exercise(name = "Exercise 2", description = "Description 2", routineId = testRoutine.id),
+            Exercise(name = "Exercise 3", description = "Description 3", routineId = testRoutine.id),
+        )
+        val data = RoutineWithExercises(testRoutine, exercises)
+        coEvery { repositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID) } returns data
+        coEvery { repositoryMock.deleteExercise(any()) } answers {
+            exercises.remove(firstArg())
+        }
+
+        viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
+
+        val loadedData = viewModel.routineData
+        assertThat(loadedData!!.exercises).hasSize(3)
+
+        viewModel.deleteExercise(context, TEST_ROUTINE_ID, exercise1)
+
+        coVerify { repositoryMock.deleteExercise(any()) }
+
+        assertThat(loadedData.exercises).hasSize(2)
+
+        assertThat(exercises[0].name).isEqualTo("Exercise 2")
+        assertThat(exercises[1].name).isEqualTo("Exercise 3")
+    }
+
     @ParameterizedTest
     @MethodSource("validationTestData")
     fun `exercise validation`(

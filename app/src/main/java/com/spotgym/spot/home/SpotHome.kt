@@ -1,6 +1,5 @@
 package com.spotgym.spot.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,7 +8,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -44,6 +43,7 @@ typealias OnRoutineClicked = (Int) -> Unit
 
 @Composable
 @ExperimentalComposeUiApi
+@ExperimentalMaterialApi
 fun SpotHome(
     onRoutineClicked: OnRoutineClicked,
     modifier: Modifier = Modifier,
@@ -86,9 +86,19 @@ fun SpotHome(
                     .padding(contentPadding),
                 color = MaterialTheme.colors.background
             ) {
+
                 LazyColumn(modifier = Modifier.padding(10.dp)) {
-                    items(routines!!) { routine ->
-                        RoutineCard(routine, onRoutineClicked)
+                    items(
+                        items = routines!!,
+                        key = { it.id }
+                    ) { routine ->
+                        RoutineCard(
+                            routine,
+                            onRoutineClicked,
+                            onDismissed = {
+                                viewModel.deleteRoutine(routine)
+                            }
+                        )
                     }
                 }
             }
@@ -162,18 +172,18 @@ private fun AddRoutineDialog(
 }
 
 @Composable
+@ExperimentalMaterialApi
 private fun RoutineCard(
     routine: Routine,
-    onRoutineClicked: OnRoutineClicked
+    onRoutineClicked: OnRoutineClicked,
+    onDismissed: () -> Unit,
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp)
-            .clickable {
-                onRoutineClicked(routine.id)
-            },
-        elevation = 10.dp
+    SpotDismissibleCard(
+        onCardClicked = { onRoutineClicked(routine.id) },
+        onDismissed = onDismissed,
+        confirmTitle = stringResource(R.string.routines_dismiss_title),
+        confirmBody = stringResource(R.string.routines_dismiss_body, routine.name),
+        modifier = Modifier.padding(5.dp)
     ) {
         Column(
             modifier = Modifier.padding(15.dp)

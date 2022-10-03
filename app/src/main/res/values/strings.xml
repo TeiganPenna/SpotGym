@@ -3,17 +3,25 @@
 
     <string name="routines_title">Routines</string>
     <string name="routines_add_routine_description">Add routine</string>
-    <string name="routines_add_routine">Add Routine</string>
+    <string name="routines_add_routine">Add routine</string>
+    <string name="routines_dismiss_title">Delete routine?</string>
+    <string name="routines_dismiss_body">\'%s\' routine and all its exercises will be deleted forever.</string>
 
     <string name="routine_name">Name</string>
     <string name="routine_description">Description</string>
 
     <string name="exercises_error_findroutine">Unable to find routine</string>
     <string name="exercises_add_exercise_description">Add exercise</string>
-    <string name="exercises_add_exercise">Add Exercise</string>
+    <string name="exercises_add_exercise">Add exercise</string>
+    <string name="exercises_dismiss_title">Delete exercise?</string>
+    <string name="exercises_dismiss_body">\'%s\' exercise will be deleted forever.</string>
 
     <string name="exercise_description">Description</string>
     <string name="exercise_name">Name</string>
 
     <string name="validation_value_empty">%s cannot be empty</string>
+
+    <string name="spot_card_delete">Delete card</string>
+
+    <string name="delete">Delete</string>
 </resources>

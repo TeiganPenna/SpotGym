@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -36,9 +36,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
+import com.spotgym.spot.data.Exercise
 
 @Composable
 @ExperimentalComposeUiApi
+@ExperimentalMaterialApi
 fun ExercisesPage(
     routineId: Int,
     modifier: Modifier = Modifier,
@@ -89,8 +91,10 @@ fun ExercisesPage(
 
                     items(exercises) { exercise ->
                         ExerciseCard(
-                            name = exercise.name,
-                            description = exercise.description
+                            exercise = exercise,
+                            onDismissed = {
+                                viewModel.deleteExercise(context, routineId, exercise)
+                            }
                         )
                     }
                 }
@@ -166,25 +170,27 @@ private fun AddExerciseDialog(
 }
 
 @Composable
+@ExperimentalMaterialApi
 private fun ExerciseCard(
-    name: String,
-    description: String,
+    exercise: Exercise,
+    onDismissed: () -> Unit,
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp),
-        elevation = 10.dp
+    SpotDismissibleCard(
+        onCardClicked = {},
+        onDismissed = onDismissed,
+        confirmTitle = stringResource(R.string.exercises_dismiss_title),
+        confirmBody = stringResource(R.string.exercises_dismiss_body, exercise.name),
+        modifier = Modifier.padding(5.dp),
     ) {
         Column(
             modifier = Modifier.padding(15.dp)
         ) {
             Text(
-                text = name,
+                text = exercise.name,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = description,
+                text = exercise.description,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

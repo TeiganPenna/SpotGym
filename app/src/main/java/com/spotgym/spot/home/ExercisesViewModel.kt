@@ -53,6 +53,17 @@ class ExercisesViewModel @Inject constructor(
         }
     }
 
+    fun deleteExercise(
+        context: Context,
+        routineId: Int,
+        exercise: Exercise
+    ) {
+        viewModelScope.launch {
+            exerciseRepository.deleteExercise(exercise)
+            loadRoutineData(context, routineId)
+        }
+    }
+
     @SuppressWarnings("ReturnCount")
     fun validateExercise(
         context: Context,

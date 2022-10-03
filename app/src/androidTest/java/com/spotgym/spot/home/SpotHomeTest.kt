@@ -1,18 +1,24 @@
 package com.spotgym.spot.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
+import com.spotgym.spot.data.Exercise
 import com.spotgym.spot.data.Routine
 import com.spotgym.spot.data.RoutineRepositoryImpl
 import com.spotgym.spot.data.room.RoutineDao
@@ -27,6 +33,7 @@ import org.junit.Test
 
 @ExperimentalComposeUiApi
 @ExperimentalCoroutinesApi
+@ExperimentalMaterialApi
 class SpotHomeTest {
 
     @get:Rule
@@ -109,13 +116,13 @@ class SpotHomeTest {
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
-        composeTestRule.onNodeWithText("Add Routine").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add routine").assertIsDisplayed()
         composeTestRule.onNodeWithTag("nameField").assertIsDisplayed()
         composeTestRule.onNodeWithTag("descField").assertIsDisplayed()
     }
 
     @Test
-    fun `when cancelled add should do nothing`(): Unit = runBlocking {
+    fun `when add cancelled should do nothing`(): Unit = runBlocking {
         setUpHome()
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
@@ -218,6 +225,71 @@ class SpotHomeTest {
         assertThat(routines).hasSize(1)
         assertThat(routines[0].name).isEqualTo("Foo")
         assertThat(routines[0].description).isEqualTo("Bar")
+    }
+
+    @Test
+    fun `when routine swiped should display dialog`(): Unit = runBlocking {
+        routineDao.insert(Routine(name = "Foo", description = "Some description"))
+
+        setUpHome()
+
+        composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
+
+        composeTestRule.onNodeWithText("Delete routine?").assertIsDisplayed()
+        composeTestRule.onNodeWithText("'Foo' routine and all its exercises will be deleted forever.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Cancel").assertIsDisplayed().assertHasClickAction()
+        composeTestRule.onNodeWithText("Delete").assertIsDisplayed().assertHasClickAction()
+    }
+
+    @Test
+    fun `when delete cancelled should do nothing`(): Unit = runBlocking {
+        routineDao.insert(Routine(name = "Foo", description = "Some description"))
+
+        setUpHome()
+
+        composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
+
+        composeTestRule.onNodeWithText("Cancel").performClick()
+
+        composeTestRule.onNodeWithText("Foo").assertIsDisplayed().assertHasClickAction()
+        val routines = routineDao.getAll()
+        assertThat(routines).hasSize(1)
+        assertThat(routines[0].name).isEqualTo("Foo")
+        assertThat(routines[0].description).isEqualTo("Some description")
+    }
+
+    @Test
+    fun `when routine deleted should not be in the repository`(): Unit = runBlocking {
+        routineDao.insert(Routine(name = "Foo", description = "Some description"))
+
+        setUpHome()
+
+        composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
+
+        composeTestRule.onNodeWithText("Delete").performClick()
+
+        composeTestRule.onAllNodesWithText("Foo").assertCountEquals(0)
+        val routines = routineDao.getAll()
+        assertThat(routines).isEmpty()
+    }
+
+    @Test
+    fun `when routine deleted should delete associated exercises`(): Unit = runBlocking {
+        routineDao.insert(Routine(id = 1, name = "Foo", description = "Some description"))
+        routineDao.insert(Routine(id = 2, name = "Bar", description = "Some description"))
+        val exerciseDao = db.exerciseDao()
+        exerciseDao.insert(Exercise(name = "Exercise 1", description = "foo", routineId = 1))
+        exerciseDao.insert(Exercise(name = "Exercise 2", description = "bar", routineId = 2))
+
+        setUpHome()
+
+        composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
+
+        composeTestRule.onNodeWithText("Delete").performClick()
+
+        val exercises = exerciseDao.getAll()
+        assertThat(exercises).hasSize(1)
+        assertThat(exercises[0].name).isEqualTo("Exercise 2")
     }
 
     private fun setUpHome(

@@ -35,6 +35,13 @@ class SpotHomeViewModel @Inject constructor(
         }
     }
 
+    fun deleteRoutine(routine: Routine) {
+        viewModelScope.launch {
+            routineRepository.deleteRoutine(routine)
+            loadRoutines()
+        }
+    }
+
     @SuppressWarnings("ReturnCount")
     fun validateRoutine(
         context: Context,

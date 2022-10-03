@@ -1,13 +1,17 @@
 package com.spotgym.spot.home
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
@@ -35,10 +39,7 @@ class MainActivityTest {
     @Test
     fun `create and store some routines with exercises`(): Unit = runBlocking {
         // add leg day routine
-        composeTestRule.onNodeWithContentDescription("Add routine").performClick()
-        composeTestRule.onNodeWithTag("nameField").performTextInput("Leg Day")
-        composeTestRule.onNodeWithTag("descField").performTextInput("Squats and Deadlifts")
-        composeTestRule.onNodeWithText("OK").performClick()
+        addRoutine("Leg Day", "Squats and Deadlifts")
 
         // check leg day routine exists
         composeTestRule.onNodeWithText("Leg Day").assertIsDisplayed()
@@ -47,14 +48,8 @@ class MainActivityTest {
         composeTestRule.onNodeWithText("Leg Day").performClick()
 
         // add leg day exercises
-        composeTestRule.onNodeWithContentDescription("Add exercise").performClick()
-        composeTestRule.onNodeWithTag("nameField").performTextInput("Squats")
-        composeTestRule.onNodeWithTag("descField").performTextInput("5 sets of 5 reps")
-        composeTestRule.onNodeWithText("OK").performClick()
-        composeTestRule.onNodeWithContentDescription("Add exercise").performClick()
-        composeTestRule.onNodeWithTag("nameField").performTextInput("Deadlifts")
-        composeTestRule.onNodeWithTag("descField").performTextInput("3 sets of 8-12 reps")
-        composeTestRule.onNodeWithText("OK").performClick()
+        addExercise("Squats", "5 sets of 5 reps")
+        addExercise("Deadlifts", "3 sets of 8-12 reps")
 
         // check leg day exercises exist
         composeTestRule.onNodeWithText("Squats").assertIsDisplayed()
@@ -69,10 +64,7 @@ class MainActivityTest {
         composeTestRule.onNodeWithText("Leg Day").assertIsDisplayed()
 
         // add chest day routine
-        composeTestRule.onNodeWithContentDescription("Add routine").performClick()
-        composeTestRule.onNodeWithTag("nameField").performTextInput("Chest Day")
-        composeTestRule.onNodeWithTag("descField").performTextInput("Bench press")
-        composeTestRule.onNodeWithText("OK").performClick()
+        addRoutine("Chest Day", "Bench press")
 
         // check both routines exist
         composeTestRule.onNodeWithText("Leg Day").assertIsDisplayed()
@@ -82,10 +74,7 @@ class MainActivityTest {
         composeTestRule.onNodeWithText("Chest Day").performClick()
 
         // add chest day exercises
-        composeTestRule.onNodeWithContentDescription("Add exercise").performClick()
-        composeTestRule.onNodeWithTag("nameField").performTextInput("Bench Press")
-        composeTestRule.onNodeWithTag("descField").performTextInput("5 sets of 5 reps")
-        composeTestRule.onNodeWithText("OK").performClick()
+        addExercise("Bench Press", "5 sets of 5 reps")
 
         // check chest day exercises exist
         composeTestRule.onNodeWithText("Bench Press").assertIsDisplayed()
@@ -101,5 +90,51 @@ class MainActivityTest {
         // check leg day exercises are still there
         composeTestRule.onNodeWithText("Squats").assertIsDisplayed()
         composeTestRule.onNodeWithText("Deadlifts").assertIsDisplayed()
+    }
+
+    @Test
+    fun `create and delete a routine with exercises`(): Unit = runBlocking {
+        // add leg day routine
+        addRoutine("Leg Day", "Squats and Deadlifts")
+
+        // open leg day routine
+        composeTestRule.onNodeWithText("Leg Day").performClick()
+
+        // add leg day exercises
+        addExercise("Squats", "5 sets of 5 reps")
+        addExercise("Deadlifts", "3 sets of 8-12 reps")
+
+        // delete squats exercise
+        composeTestRule.onNodeWithText("Squats").performTouchInput { swipeLeft() }
+        composeTestRule.onNodeWithText("Delete").performClick()
+
+        // check squats exercise is gone
+        composeTestRule.onAllNodesWithText("Squats").assertCountEquals(0)
+
+        // go back to routines page
+        composeTestRule.activityRule.scenario.onActivity { activity ->
+            activity.onBackPressed()
+        }
+
+        // delete leg day routine
+        composeTestRule.onNodeWithText("Leg Day").performTouchInput { swipeLeft() }
+        composeTestRule.onNodeWithText("Delete").performClick()
+
+        // check leg day routine is gone
+        composeTestRule.onAllNodesWithText("Leg Day").assertCountEquals(0)
+    }
+
+    private fun addRoutine(name: String, description: String) {
+        composeTestRule.onNodeWithContentDescription("Add routine").performClick()
+        composeTestRule.onNodeWithTag("nameField").performTextInput(name)
+        composeTestRule.onNodeWithTag("descField").performTextInput(description)
+        composeTestRule.onNodeWithText("OK").performClick()
+    }
+
+    private fun addExercise(name: String, description: String) {
+        composeTestRule.onNodeWithContentDescription("Add exercise").performClick()
+        composeTestRule.onNodeWithTag("nameField").performTextInput(name)
+        composeTestRule.onNodeWithTag("descField").performTextInput(description)
+        composeTestRule.onNodeWithText("OK").performClick()
     }
 }
