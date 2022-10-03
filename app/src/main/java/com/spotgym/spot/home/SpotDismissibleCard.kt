@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Card
 import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.SwipeToDismiss
@@ -50,7 +51,7 @@ fun SpotDismissibleCard(
 
     val dismissState = rememberDismissState(
         confirmStateChange = {
-            showDismissAlert = true
+            if (it == DismissValue.DismissedToStart) showDismissAlert = true
             false // always disable, this is the only way to have an effective confirmation dialog
         }
     )

@@ -2,13 +2,16 @@ package com.spotgym.spot.home
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeRight
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +39,16 @@ class SpotDismissibleCardTest {
     }
 
     @Test
-    fun `when swiped shows delete confirmation dialog`() {
+    fun `when swiped right does nothing`() {
+        setUpCard()
+
+        composeTestRule.onNodeWithText("Some text").performTouchInput { swipeRight() }
+
+        composeTestRule.onAllNodesWithText("Delete").assertCountEquals(0)
+    }
+
+    @Test
+    fun `when swiped left shows delete confirmation dialog`() {
         setUpCard()
 
         composeTestRule.onNodeWithText("Some text").performTouchInput { swipeLeft() }
