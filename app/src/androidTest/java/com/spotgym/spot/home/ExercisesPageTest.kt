@@ -138,7 +138,7 @@ class ExercisesPageTest {
 
         composeTestRule.onNodeWithContentDescription("Add exercise").performClick()
 
-        composeTestRule.onNodeWithText("Add exercise").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add Exercise").assertIsDisplayed()
         composeTestRule.onNodeWithTag("nameField").assertIsDisplayed()
         composeTestRule.onNodeWithTag("descField").assertIsDisplayed()
     }

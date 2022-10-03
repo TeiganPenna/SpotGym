@@ -116,7 +116,7 @@ class SpotHomeTest {
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
-        composeTestRule.onNodeWithText("Add routine").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add Routine").assertIsDisplayed()
         composeTestRule.onNodeWithTag("nameField").assertIsDisplayed()
         composeTestRule.onNodeWithTag("descField").assertIsDisplayed()
     }
