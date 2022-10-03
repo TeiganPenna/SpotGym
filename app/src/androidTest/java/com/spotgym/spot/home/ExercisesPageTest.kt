@@ -2,18 +2,23 @@ package com.spotgym.spot.home
 
 import android.widget.Toast
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasProgressBarRangeInfo
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import com.spotgym.spot.data.Exercise
@@ -40,6 +45,7 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 @ExperimentalComposeUiApi
 @ExperimentalCoroutinesApi
+@ExperimentalMaterialApi
 class ExercisesPageTest {
 
     @get:Rule
@@ -255,6 +261,55 @@ class ExercisesPageTest {
         assertThat(exercises[0].routineId).isEqualTo(TEST_ROUTINE_ID)
         assertThat(exercises[0].name).isEqualTo("Foo")
         assertThat(exercises[0].description).isEqualTo("Bar")
+    }
+
+    @Test
+    fun `when exercise swiped should display dialog`(): Unit = runBlocking {
+        routineDao.insert(testRoutine)
+        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID))
+
+        setUpExercisesPage()
+
+        composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
+
+        composeTestRule.onNodeWithText("Delete exercise?").assertIsDisplayed()
+        composeTestRule.onNodeWithText("'Foo' exercise will be deleted forever.").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Cancel").assertIsDisplayed().assertHasClickAction()
+        composeTestRule.onNodeWithText("Delete").assertIsDisplayed().assertHasClickAction()
+    }
+
+    @Test
+    fun `when delete cancelled should do nothing`(): Unit = runBlocking {
+        routineDao.insert(testRoutine)
+        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID))
+
+        setUpExercisesPage()
+
+        composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
+
+        composeTestRule.onNodeWithText("Cancel").performClick()
+
+        composeTestRule.onNodeWithText("Foo").assertIsDisplayed().assertHasClickAction()
+        val exercises = exerciseDao.getAll()
+        assertThat(exercises).hasSize(1)
+        assertThat(exercises[0].name).isEqualTo("Foo")
+        assertThat(exercises[0].description).isEqualTo("Some description")
+    }
+
+    @Test
+    fun `when exercise deleted should not be in the repository`(): Unit = runBlocking {
+        routineDao.insert(testRoutine)
+        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID))
+
+        setUpExercisesPage()
+
+        composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
+
+        composeTestRule.onNodeWithText("Delete").performClick()
+
+        composeTestRule.onAllNodesWithText("Foo").assertCountEquals(0)
+        val exercises = exerciseDao.getAll()
+        assertThat(exercises).isEmpty()
     }
 
     private fun setUpExercisesPage() {

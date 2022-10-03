@@ -104,15 +104,23 @@ class MainActivityTest {
         addExercise("Squats", "5 sets of 5 reps")
         addExercise("Deadlifts", "3 sets of 8-12 reps")
 
+        // delete squats exercise
+        composeTestRule.onNodeWithText("Squats").performTouchInput { swipeLeft() }
+        composeTestRule.onNodeWithText("Delete").performClick()
+
+        // check squats exercise is gone
+        composeTestRule.onAllNodesWithText("Squats").assertCountEquals(0)
+
         // go back to routines page
         composeTestRule.activityRule.scenario.onActivity { activity ->
             activity.onBackPressed()
         }
 
+        // delete leg day routine
         composeTestRule.onNodeWithText("Leg Day").performTouchInput { swipeLeft() }
-        composeTestRule.onNodeWithText("Delete routine?").assertIsDisplayed()
         composeTestRule.onNodeWithText("Delete").performClick()
 
+        // check leg day routine is gone
         composeTestRule.onAllNodesWithText("Leg Day").assertCountEquals(0)
     }
 
