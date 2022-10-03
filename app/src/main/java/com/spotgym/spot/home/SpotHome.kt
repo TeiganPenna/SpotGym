@@ -141,7 +141,7 @@ private fun AddRoutineDialog(
         },
         onPositiveClick = { viewModel.addRoutine(name, description) },
         modifier = Modifier
-            .padding(35.dp)
+            .padding(40.dp)
             .fillMaxWidth()
             .wrapContentWidth()
     ) {
@@ -154,7 +154,9 @@ private fun AddRoutineDialog(
                 nameIsError = false
             },
             keyboardOptions = KeyboardOptions(KeyboardCapitalization.Words),
-            modifier = Modifier.testTag("nameField")
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("nameField")
         )
 
         DialogValidationTextField(
@@ -166,7 +168,9 @@ private fun AddRoutineDialog(
                 descriptionIsError = false
             },
             keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
-            modifier = Modifier.testTag("descField")
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("descField")
         )
     }
 }
@@ -181,7 +185,7 @@ private fun RoutineCard(
     SpotDismissibleCard(
         onCardClicked = { onRoutineClicked(routine.id) },
         onDismissed = onDismissed,
-        confirmTitle = stringResource(R.string.routines_dismiss_title),
+        confirmTitle = stringResource(R.string.routines_dismiss_title, routine.name),
         confirmBody = stringResource(R.string.routines_dismiss_body, routine.name),
         modifier = Modifier.padding(5.dp)
     ) {

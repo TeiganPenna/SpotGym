@@ -116,7 +116,7 @@ class SpotHomeTest {
 
         composeTestRule.onNodeWithContentDescription("Add routine").performClick()
 
-        composeTestRule.onNodeWithText("Add routine").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add Routine").assertIsDisplayed()
         composeTestRule.onNodeWithTag("nameField").assertIsDisplayed()
         composeTestRule.onNodeWithTag("descField").assertIsDisplayed()
     }
@@ -235,7 +235,7 @@ class SpotHomeTest {
 
         composeTestRule.onNodeWithText("Foo").performTouchInput { swipeLeft() }
 
-        composeTestRule.onNodeWithText("Delete routine?").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Delete 'Foo'?").assertIsDisplayed()
         composeTestRule.onNodeWithText("'Foo' routine and all its exercises will be deleted forever.").assertIsDisplayed()
         composeTestRule.onNodeWithText("Cancel").assertIsDisplayed().assertHasClickAction()
         composeTestRule.onNodeWithText("Delete").assertIsDisplayed().assertHasClickAction()
