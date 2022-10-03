@@ -141,7 +141,7 @@ private fun AddRoutineDialog(
         },
         onPositiveClick = { viewModel.addRoutine(name, description) },
         modifier = Modifier
-            .padding(35.dp)
+            .padding(40.dp)
             .fillMaxWidth()
             .wrapContentWidth()
     ) {
@@ -154,7 +154,9 @@ private fun AddRoutineDialog(
                 nameIsError = false
             },
             keyboardOptions = KeyboardOptions(KeyboardCapitalization.Words),
-            modifier = Modifier.testTag("nameField")
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("nameField")
         )
 
         DialogValidationTextField(
@@ -166,7 +168,9 @@ private fun AddRoutineDialog(
                 descriptionIsError = false
             },
             keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
-            modifier = Modifier.testTag("descField")
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("descField")
         )
     }
 }

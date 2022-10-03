@@ -139,7 +139,7 @@ private fun AddExerciseDialog(
         },
         onPositiveClick = { viewModel.addExercise(context, routineId, name, description) },
         modifier = Modifier
-            .padding(35.dp)
+            .padding(40.dp)
             .fillMaxWidth()
             .wrapContentWidth()
     ) {
@@ -152,7 +152,9 @@ private fun AddExerciseDialog(
                 nameIsError = false
             },
             keyboardOptions = KeyboardOptions(KeyboardCapitalization.Words),
-            modifier = Modifier.testTag("nameField")
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("nameField")
         )
 
         DialogValidationTextField(
@@ -164,7 +166,9 @@ private fun AddExerciseDialog(
                 descriptionIsError = false
             },
             keyboardOptions = KeyboardOptions(KeyboardCapitalization.Sentences),
-            modifier = Modifier.testTag("descField")
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("descField")
         )
     }
 }
