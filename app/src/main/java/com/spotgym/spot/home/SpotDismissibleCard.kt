@@ -41,7 +41,7 @@ fun SpotDismissibleCard(
 ) {
     var showDismissAlert by remember { mutableStateOf(false) }
     if (showDismissAlert) {
-        DismissRoutineAlert(
+        DismissCardAlert(
             setShowAlert = { showDismissAlert = it },
             onConfirmed = onDismissed,
             confirmTitle = confirmTitle,
@@ -88,7 +88,7 @@ fun SpotDismissibleCard(
 }
 
 @Composable
-private fun DismissRoutineAlert(
+private fun DismissCardAlert(
     setShowAlert: (Boolean) -> Unit,
     onConfirmed: () -> Unit,
     confirmTitle: String,
