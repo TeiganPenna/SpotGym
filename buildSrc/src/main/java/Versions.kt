@@ -1,3 +1,5 @@
+import java.util.Locale
+
 object Versions {
     // Sdk and tools
     const val COMPILE_SDK = 32
@@ -27,4 +29,11 @@ object Versions {
     const val KOTLINX_COROUTINES = "1.6.4"
     const val MOCKK = "1.12.8"
     const val TEST_EXT_JUNIT = "1.1.3"
+
+    fun isStable(version: String): Boolean {
+        val stableKeyword = listOf("RELEASE", "FINAL", "GA")
+            .any { version.toUpperCase(Locale.getDefault()).contains(it) }
+        val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+        return stableKeyword || regex.matches(version)
+    }
 }

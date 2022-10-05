@@ -120,6 +120,18 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (!Versions.isStable(candidate.version) && Versions.isStable(currentVersion)) {
+                    reject("Release candidate")
+                }
+            }
+        }
+    }
+}
+
 kapt {
     correctErrorTypes = true
 }
