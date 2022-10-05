@@ -100,7 +100,7 @@ dependencies {
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:${Versions.HILT}")
     androidTestImplementation("de.mannodermaus.junit5:android-test-core:${Versions.JUNIT_JUPITER_ANDROID}")
     androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:${Versions.JUNIT_JUPITER_ANDROID}")
-    androidTestImplementation("io.mockk:mockk:${Versions.MOCKK}")
+    androidTestImplementation("io.mockk:mockk-android:${Versions.MOCKK}")
     androidTestImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
     androidTestImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
     androidTestImplementation("org.mockito:mockito-android:4.8.0")
@@ -108,7 +108,7 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE_UI}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE_UI}")
-    testImplementation("io.mockk:mockk:${Versions.MOCKK}")
+    testImplementation("io.mockk:mockk-android:${Versions.MOCKK}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT_JUPITER}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${Versions.JUNIT_JUPITER}")

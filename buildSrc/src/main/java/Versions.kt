@@ -30,7 +30,7 @@ object Versions {
     const val JUNIT_JUPITER_ANDROID = "1.3.0"
     const val JUNIT_JUPITER = "5.9.1"
     const val KOTLINX_COROUTINES = "1.6.4"
-    const val MOCKK = "1.12.8"
+    const val MOCKK = "1.13.2"
     const val TEST_EXT_JUNIT = "1.1.3"
 
     fun isStable(version: String): Boolean {
