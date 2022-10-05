@@ -15,7 +15,7 @@ object Versions {
     const val COMPOSE_MATERIAL = "1.2.1"
     const val COMPOSE_RUNTIME = "1.2.1"
     const val COMPOSE_UI = "1.2.1"
-    const val HILT = "2.43.2"
+    const val HILT = "2.44"
     const val HILT_NAVIGATION = "1.0.0"
     const val KTX = "1.9.0"
     const val LIFECYCLE = "2.5.1"
