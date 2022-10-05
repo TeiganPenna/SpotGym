@@ -10,7 +10,7 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.43.2" apply false
     id("de.mannodermaus.android-junit5") version "1.8.2.1" apply false
     id("io.gitlab.arturbosch.detekt") version "1.21.0" apply false
-    id("org.jetbrains.kotlin.android") version "1.7.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.7.20" apply false
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0" apply false
 }
 
