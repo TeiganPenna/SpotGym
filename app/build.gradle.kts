@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("com.github.ben-manes.versions")
     id("dagger.hilt.android.plugin")
     id("de.mannodermaus.android-junit5")
     id("io.gitlab.arturbosch.detekt")
@@ -52,7 +53,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.2.0"
+        kotlinCompilerExtensionVersion = Versions.COMPOSE
     }
     packagingOptions {
         resources {
@@ -83,15 +84,15 @@ dependencies {
     implementation("androidx.activity:activity-compose:${Versions.ACTIVITY_COMPOSE}")
     implementation("androidx.navigation:navigation-compose:${Versions.NAVIGATION_COMPOSE}")
     implementation("com.google.accompanist:accompanist-navigation-animation:${Versions.ANIMATED_NAVIGATION}")
-    implementation("androidx.compose.ui:ui:${Versions.COMPOSE}")
-    implementation("androidx.compose.material:material:${Versions.COMPOSE}")
-    implementation("androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE}")
-    implementation("androidx.compose.runtime:runtime-livedata:${Versions.COMPOSE}")
+    implementation("androidx.compose.ui:ui:${Versions.COMPOSE_UI}")
+    implementation("androidx.compose.material:material:${Versions.COMPOSE_MATERIAL}")
+    implementation("androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE_UI}")
+    implementation("androidx.compose.runtime:runtime-livedata:${Versions.COMPOSE_RUNTIME}")
 
     // Testing dependencies
     androidTestImplementation("androidx.arch.core:core-testing:${Versions.CORE_TESTING}")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE_UI}")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE_UI}")
     androidTestImplementation("androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.ESPRESSO}")
     androidTestImplementation("androidx.test:runner:${Versions.ANDROID_TEST_RUNNER}")
@@ -99,15 +100,15 @@ dependencies {
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:${Versions.HILT}")
     androidTestImplementation("de.mannodermaus.junit5:android-test-core:${Versions.JUNIT_JUPITER_ANDROID}")
     androidTestRuntimeOnly("de.mannodermaus.junit5:android-test-runner:${Versions.JUNIT_JUPITER_ANDROID}")
-    androidTestImplementation("io.mockk:mockk:${Versions.MOCKK}")
+    androidTestImplementation("io.mockk:mockk-android:${Versions.MOCKK}")
     androidTestImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
     androidTestImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
     androidTestImplementation("org.mockito:mockito-android:4.8.0")
     androidTestImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 
-    debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE}")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}")
-    testImplementation("io.mockk:mockk:${Versions.MOCKK}")
+    debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE_UI}")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE_UI}")
+    testImplementation("io.mockk:mockk-android:${Versions.MOCKK}")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${Versions.JUNIT_JUPITER}")
     testImplementation("org.junit.jupiter:junit-jupiter-params:${Versions.JUNIT_JUPITER}")
@@ -117,6 +118,18 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (!Versions.isStable(candidate.version) && Versions.isStable(currentVersion)) {
+                    reject("Release candidate")
+                }
+            }
+        }
+    }
 }
 
 kapt {
