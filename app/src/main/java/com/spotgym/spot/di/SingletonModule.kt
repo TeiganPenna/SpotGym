@@ -6,6 +6,7 @@ import com.spotgym.spot.data.ExerciseRepository
 import com.spotgym.spot.data.ExerciseRepositoryImpl
 import com.spotgym.spot.data.RoutineRepository
 import com.spotgym.spot.data.RoutineRepositoryImpl
+import com.spotgym.spot.data.room.Migrations.ROUTINE_EXERCISE_INDEX_3_4
 import com.spotgym.spot.data.room.SpotDatabase
 import com.spotgym.spot.ui.service.ToastService
 import com.spotgym.spot.ui.service.ToastServiceImpl
@@ -40,7 +41,7 @@ abstract class SingletonModule {
             context,
             SpotDatabase::class.java,
             "spot_database"
-        ).fallbackToDestructiveMigration().build()
+        ).addMigrations(ROUTINE_EXERCISE_INDEX_3_4).build()
 
         @Singleton
         @Provides
