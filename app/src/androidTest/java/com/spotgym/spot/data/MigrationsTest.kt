@@ -20,11 +20,14 @@ class MigrationsTest {
     @Test
     fun `migration 3 to 4`(): Unit = runBlocking {
         migrationTestHelper.createDatabase(TEST_DB_NAME, 3).apply {
-            execSQL("INSERT INTO routines (routineName, routineDescription)" +
-                    "VALUES ('1 routine', '1 description')")
-            execSQL("INSERT INTO exercises (exerciseName, exerciseDescription, routineId)" +
-                    "VALUES ('1 exercise', '1 description', 1)")
-
+            execSQL(
+                "INSERT INTO routines (routineName, routineDescription)" +
+                    "VALUES ('1 routine', '1 description')"
+            )
+            execSQL(
+                "INSERT INTO exercises (exerciseName, exerciseDescription, routineId)" +
+                    "VALUES ('1 exercise', '1 description', 1)"
+            )
             close()
         }
 
