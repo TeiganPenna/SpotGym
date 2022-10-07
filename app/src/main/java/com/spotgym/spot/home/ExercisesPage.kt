@@ -87,7 +87,7 @@ fun ExercisesPage(
                 color = MaterialTheme.colors.background
             ) {
                 LazyColumn(modifier = Modifier.padding(10.dp)) {
-                    val exercises = viewModel.routineData!!.exercises
+                    val exercises = viewModel.routineData!!.getOrderedExercises()
 
                     items(exercises) { exercise ->
                         ExerciseCard(

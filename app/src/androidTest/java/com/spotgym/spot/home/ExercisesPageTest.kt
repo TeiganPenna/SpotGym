@@ -62,7 +62,7 @@ class ExercisesPageTest {
     private lateinit var routineDao: RoutineDao
     private lateinit var viewModel: ExercisesViewModel
 
-    private val testRoutine = Routine(TEST_ROUTINE_ID, "My Routine", "My routine description")
+    private val testRoutine = Routine(TEST_ROUTINE_ID, "My Routine", "My routine description", 0)
 
     @Before
     fun before() {
@@ -119,8 +119,8 @@ class ExercisesPageTest {
     @Test
     fun `when loads exercises should display them`(): Unit = runBlocking {
         routineDao.insert(testRoutine)
-        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID))
-        exerciseDao.insert(Exercise(name = "Bar", description = "Some other description", routineId = TEST_ROUTINE_ID))
+        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID, index = 0))
+        exerciseDao.insert(Exercise(name = "Bar", description = "Some other description", routineId = TEST_ROUTINE_ID, index = 1))
 
         setUpExercisesPage()
 
@@ -266,7 +266,7 @@ class ExercisesPageTest {
     @Test
     fun `when exercise swiped should display dialog`(): Unit = runBlocking {
         routineDao.insert(testRoutine)
-        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID))
+        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID, index = 0))
 
         setUpExercisesPage()
 
@@ -281,7 +281,7 @@ class ExercisesPageTest {
     @Test
     fun `when delete cancelled should do nothing`(): Unit = runBlocking {
         routineDao.insert(testRoutine)
-        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID))
+        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID, index = 0))
 
         setUpExercisesPage()
 
@@ -299,7 +299,7 @@ class ExercisesPageTest {
     @Test
     fun `when exercise deleted should not be in the repository`(): Unit = runBlocking {
         routineDao.insert(testRoutine)
-        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID))
+        exerciseDao.insert(Exercise(name = "Foo", description = "Some description", routineId = TEST_ROUTINE_ID, index = 0))
 
         setUpExercisesPage()
 
