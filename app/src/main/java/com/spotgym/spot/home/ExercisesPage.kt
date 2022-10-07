@@ -1,5 +1,6 @@
 package com.spotgym.spot.home
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -38,6 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
 import com.spotgym.spot.data.Exercise
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.detectReorderAfterLongPress
+import org.burnoutcrew.reorderable.rememberReorderableLazyListState
+import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 @ExperimentalComposeUiApi
@@ -88,15 +94,37 @@ fun ExercisesPage(
                 color = MaterialTheme.colors.background
             ) {
                 val exercises by viewModel.exercises.collectAsState()
-                LazyColumn(modifier = Modifier.padding(10.dp)) {
 
-                    items(exercises!!) { exercise ->
-                        ExerciseCard(
-                            exercise = exercise,
-                            onDismissed = {
-                                viewModel.deleteExercise(context, routineId, exercise)
-                            }
-                        )
+                val state = rememberReorderableLazyListState(onMove = { from, to ->
+                    viewModel.moveExercise(from.index, to.index)
+                })
+
+                LazyColumn(
+                    state = state.listState,
+                    modifier = Modifier
+                        .reorderable(state)
+                        .detectReorderAfterLongPress(state)
+                        .padding(10.dp)
+                ) {
+                    items(
+                        items = exercises!!,
+                        key = { it.id }
+                    ) { exercise ->
+                        ReorderableItem(
+                            reorderableState = state,
+                            key = exercise.id,
+                            modifier = Modifier.padding(5.dp)
+                        ) { isDragging ->
+                            val elevation = animateDpAsState(if (isDragging) 8.dp else 0.dp)
+
+                            ExerciseCard(
+                                exercise = exercise,
+                                onDismissed = {
+                                    viewModel.deleteExercise(context, routineId, exercise)
+                                },
+                                modifier = Modifier.shadow(elevation.value)
+                            )
+                        }
                     }
                 }
             }
@@ -179,13 +207,14 @@ private fun AddExerciseDialog(
 private fun ExerciseCard(
     exercise: Exercise,
     onDismissed: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     SpotDismissibleCard(
         onCardClicked = {},
         onDismissed = onDismissed,
         confirmTitle = stringResource(R.string.exercises_dismiss_title, exercise.name),
         confirmBody = stringResource(R.string.exercises_dismiss_body, exercise.name),
-        modifier = Modifier.padding(5.dp),
+        modifier = modifier,
     ) {
         Column(
             modifier = Modifier.padding(15.dp)
