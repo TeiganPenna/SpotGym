@@ -8,6 +8,7 @@ import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasProgressBarRangeInfo
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -28,6 +29,7 @@ import com.spotgym.spot.data.room.ExerciseDao
 import com.spotgym.spot.data.room.RoutineDao
 import com.spotgym.spot.data.room.SpotDatabase
 import com.spotgym.spot.ui.service.ToastService
+import com.spotgym.spot.ui.theme.SpotTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
@@ -124,10 +126,10 @@ class ExercisesPageTest {
 
         setUpExercisesPage()
 
-        composeTestRule.onNodeWithText("Foo").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Some description").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Bar").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Some other description").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Foo").assertIsDisplayed().assertHasNoClickAction()
+        composeTestRule.onNodeWithText("Some description").assertIsDisplayed().assertHasNoClickAction()
+        composeTestRule.onNodeWithText("Bar").assertIsDisplayed().assertHasNoClickAction()
+        composeTestRule.onNodeWithText("Some other description").assertIsDisplayed().assertHasNoClickAction()
     }
 
     @Test
@@ -240,8 +242,8 @@ class ExercisesPageTest {
         assertThat(exercises[0].name).isEqualTo("Foo")
         assertThat(exercises[0].description).isEqualTo("Bar")
 
-        composeTestRule.onNodeWithText("Foo").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Bar").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Foo").assertIsDisplayed().assertHasNoClickAction()
+        composeTestRule.onNodeWithText("Bar").assertIsDisplayed().assertHasNoClickAction()
     }
 
     @Test
@@ -289,7 +291,7 @@ class ExercisesPageTest {
 
         composeTestRule.onNodeWithText("Cancel").performClick()
 
-        composeTestRule.onNodeWithText("Foo").assertIsDisplayed().assertHasClickAction()
+        composeTestRule.onNodeWithText("Foo").assertIsDisplayed().assertHasNoClickAction()
         val exercises = exerciseDao.getAll()
         assertThat(exercises).hasSize(1)
         assertThat(exercises[0].name).isEqualTo("Foo")
@@ -314,10 +316,12 @@ class ExercisesPageTest {
 
     private fun setUpExercisesPage() {
         composeTestRule.setContent {
-            ExercisesPage(
-                viewModel = viewModel,
-                routineId = TEST_ROUTINE_ID,
-            )
+            SpotTheme {
+                ExercisesPage(
+                    viewModel = viewModel,
+                    routineId = TEST_ROUTINE_ID,
+                )
+            }
         }
     }
 

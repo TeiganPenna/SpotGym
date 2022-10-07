@@ -210,7 +210,7 @@ private fun ExerciseCard(
     modifier: Modifier = Modifier,
 ) {
     SpotDismissibleCard(
-        onCardClicked = {},
+        onCardClicked = null,
         onDismissed = onDismissed,
         confirmTitle = stringResource(R.string.exercises_dismiss_title, exercise.name),
         confirmBody = stringResource(R.string.exercises_dismiss_body, exercise.name),

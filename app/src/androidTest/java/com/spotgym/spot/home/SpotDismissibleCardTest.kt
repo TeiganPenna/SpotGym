@@ -4,6 +4,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
@@ -36,6 +37,13 @@ class SpotDismissibleCardTest {
 
         composeTestRule.onNodeWithText("Some text").performClick()
         assertThat(clicked).isTrue
+    }
+
+    @Test
+    fun `when onCardClicked is null content should not be clickable`() {
+        setUpCard(onCardClicked = null)
+
+        composeTestRule.onNodeWithText("Some text").assertHasNoClickAction()
     }
 
     @Test
@@ -83,8 +91,20 @@ class SpotDismissibleCardTest {
         assertThat(dismissed).isTrue
     }
 
+    @Test
+    fun `when onCardClicked is null then can be dismissed`() {
+        setUpCard(onCardClicked = null)
+
+        composeTestRule.onNodeWithText("Some text").performTouchInput { swipeLeft() }
+
+        composeTestRule.onNodeWithText("Some title").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Some body").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Cancel").assertIsDisplayed().assertHasClickAction()
+        composeTestRule.onNodeWithText("Delete").assertIsDisplayed().assertHasClickAction()
+    }
+
     private fun setUpCard(
-        onCardClicked: () -> Unit = {},
+        onCardClicked: (() -> Unit)? = {},
         onDismissed: () -> Unit = {}
     ) {
         composeTestRule.setContent {

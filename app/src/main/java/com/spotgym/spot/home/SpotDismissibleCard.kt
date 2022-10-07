@@ -31,7 +31,7 @@ import com.spotgym.spot.R
 @Composable
 @ExperimentalMaterialApi
 fun SpotDismissibleCard(
-    onCardClicked: () -> Unit,
+    onCardClicked: (() -> Unit)?,
     onDismissed: () -> Unit,
     confirmTitle: String,
     confirmBody: String,
@@ -74,14 +74,7 @@ fun SpotDismissibleCard(
             }
         }
     ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    onCardClicked()
-                },
-            elevation = 10.dp
-        ) {
+        SpotCard(onCardClicked) {
             content()
         }
     }
@@ -118,4 +111,31 @@ private fun DismissCardAlert(
             }
         }
     )
+}
+
+@Composable
+private fun SpotCard(
+    onCardClicked: (() -> Unit)?,
+    content: @Composable
+    () -> Unit
+) {
+    if (onCardClicked != null) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onCardClicked()
+                },
+            elevation = 10.dp
+        ) {
+            content()
+        }
+    } else {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = 10.dp
+        ) {
+            content()
+        }
+    }
 }

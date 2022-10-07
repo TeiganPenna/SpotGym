@@ -23,6 +23,7 @@ import com.spotgym.spot.data.Routine
 import com.spotgym.spot.data.RoutineRepositoryImpl
 import com.spotgym.spot.data.room.RoutineDao
 import com.spotgym.spot.data.room.SpotDatabase
+import com.spotgym.spot.ui.theme.SpotTheme
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
@@ -296,10 +297,12 @@ class SpotHomeTest {
         onRoutineClicked: OnRoutineClicked = {},
     ) {
         composeTestRule.setContent {
-            SpotHome(
-                viewModel = viewModel,
-                onRoutineClicked = onRoutineClicked,
-            )
+            SpotTheme {
+                SpotHome(
+                    viewModel = viewModel,
+                    onRoutineClicked = onRoutineClicked,
+                )
+            }
         }
     }
 }
