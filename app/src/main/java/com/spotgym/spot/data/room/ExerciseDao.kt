@@ -9,7 +9,7 @@ import com.spotgym.spot.data.RoutineWithExercises
 @Dao
 interface ExerciseDao : DataDao<Exercise> {
 
-    @Query("select * from exercises")
+    @Query("select * from exercises order by exerciseIndex")
     suspend fun getAll(): List<Exercise>
 
     @Query("select * from exercises where id = :id LIMIT 1")
