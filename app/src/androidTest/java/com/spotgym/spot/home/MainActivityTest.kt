@@ -12,6 +12,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
+import androidx.test.espresso.Espresso.pressBack
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
@@ -56,9 +57,7 @@ class MainActivityTest {
         composeTestRule.onNodeWithText("Deadlifts").assertIsDisplayed()
 
         // go back to routines page
-        composeTestRule.activityRule.scenario.onActivity { activity ->
-            activity.onBackPressed()
-        }
+        pressBack()
 
         // check leg day routine is still there
         composeTestRule.onNodeWithText("Leg Day").assertIsDisplayed()
@@ -80,9 +79,7 @@ class MainActivityTest {
         composeTestRule.onNodeWithText("Bench Press").assertIsDisplayed()
 
         // go back to routines page
-        composeTestRule.activityRule.scenario.onActivity { activity ->
-            activity.onBackPressed()
-        }
+        pressBack()
 
         // open leg day routine
         composeTestRule.onNodeWithText("Leg Day").performClick()
@@ -112,9 +109,7 @@ class MainActivityTest {
         composeTestRule.onAllNodesWithText("Squats").assertCountEquals(0)
 
         // go back to routines page
-        composeTestRule.activityRule.scenario.onActivity { activity ->
-            activity.onBackPressed()
-        }
+        pressBack()
 
         // delete leg day routine
         composeTestRule.onNodeWithText("Leg Day").performTouchInput { swipeLeft() }
