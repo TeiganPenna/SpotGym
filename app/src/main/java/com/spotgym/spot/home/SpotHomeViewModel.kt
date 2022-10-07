@@ -43,6 +43,26 @@ class SpotHomeViewModel @Inject constructor(
         }
     }
 
+    fun moveRoutine(fromIndex: Int, toIndex: Int) {
+        _routines.value = _routines.value?.toMutableList()?.apply {
+            add(toIndex, removeAt(fromIndex))
+        }
+
+        viewModelScope.launch {
+            val routinesToUpdate = _routines.value
+                ?.filterIndexed { index, routine ->
+                    if (routine.index != index) {
+                        routine.index = index
+                        return@filterIndexed true
+                    }
+                    return@filterIndexed false
+                }
+            if (routinesToUpdate != null) {
+                routineRepository.updateRoutines(routinesToUpdate)
+            }
+        }
+    }
+
     @SuppressWarnings("ReturnCount")
     fun validateRoutine(
         context: Context,

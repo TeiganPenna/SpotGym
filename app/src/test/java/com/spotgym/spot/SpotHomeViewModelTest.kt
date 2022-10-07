@@ -6,6 +6,7 @@ import com.spotgym.spot.data.RoutineRepository
 import com.spotgym.spot.home.ExercisesViewModel
 import com.spotgym.spot.home.SpotHomeViewModel
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -169,6 +170,75 @@ class SpotHomeViewModelTest {
 
         assertThat(routines[0].name).isEqualTo("Routine 2")
         assertThat(routines[1].name).isEqualTo("Routine 3")
+    }
+
+    @Test
+    fun `moveRoutine moves in loaded routines`() = runTest {
+        val routines = listOf(
+            Routine(name = "Routine 1", description = "Description 1", index = 0),
+            Routine(name = "Routine 2", description = "Description 2", index = 1),
+            Routine(name = "Routine 3", description = "Description 3", index = 2),
+        )
+        coEvery { repositoryMock.getAllRoutines() } returns routines
+        coJustRun { repositoryMock.updateRoutines(any()) }
+
+        viewModel.loadRoutines()
+
+        var loadedRoutines = viewModel.routines.value!!
+        assertThat(loadedRoutines).hasSize(3)
+        assertThat(loadedRoutines[0].name).isEqualTo("Routine 1")
+        assertThat(loadedRoutines[0].index).isEqualTo(0)
+        assertThat(loadedRoutines[1].name).isEqualTo("Routine 2")
+        assertThat(loadedRoutines[1].index).isEqualTo(1)
+        assertThat(loadedRoutines[2].name).isEqualTo("Routine 3")
+        assertThat(loadedRoutines[2].index).isEqualTo(2)
+
+        viewModel.moveRoutine(2, 0)
+
+        loadedRoutines = viewModel.routines.value!!
+        assertThat(loadedRoutines).hasSize(3)
+        assertThat(loadedRoutines[0].name).isEqualTo("Routine 3")
+        assertThat(loadedRoutines[0].index).isEqualTo(0)
+        assertThat(loadedRoutines[1].name).isEqualTo("Routine 1")
+        assertThat(loadedRoutines[1].index).isEqualTo(1)
+        assertThat(loadedRoutines[2].name).isEqualTo("Routine 2")
+        assertThat(loadedRoutines[2].index).isEqualTo(2)
+    }
+
+    @Test
+    fun `moveRoutine updates repository for only changed routines`() = runTest {
+        val routines = listOf(
+            Routine(name = "Routine 1", description = "Description 1", index = 0),
+            Routine(name = "Routine 2", description = "Description 2", index = 1),
+            Routine(name = "Routine 3", description = "Description 3", index = 2),
+        )
+        coEvery { repositoryMock.getAllRoutines() } returns routines
+        coJustRun { repositoryMock.updateRoutines(any()) }
+
+        viewModel.loadRoutines()
+
+        viewModel.moveRoutine(2, 1)
+
+        val loadedRoutines = viewModel.routines.value!!
+        assertThat(loadedRoutines).hasSize(3)
+        assertThat(loadedRoutines[0].name).isEqualTo("Routine 1")
+        assertThat(loadedRoutines[0].index).isEqualTo(0)
+        assertThat(loadedRoutines[1].name).isEqualTo("Routine 3")
+        assertThat(loadedRoutines[1].index).isEqualTo(1)
+        assertThat(loadedRoutines[2].name).isEqualTo("Routine 2")
+        assertThat(loadedRoutines[2].index).isEqualTo(2)
+
+        coVerify {
+            repositoryMock.updateRoutines(
+                withArg { updatedRoutines ->
+                    assertThat(updatedRoutines).hasSize(2)
+                    assertThat(updatedRoutines[0].name).isEqualTo("Routine 3")
+                    assertThat(updatedRoutines[0].index).isEqualTo(1)
+                    assertThat(updatedRoutines[1].name).isEqualTo("Routine 2")
+                    assertThat(updatedRoutines[1].index).isEqualTo(2)
+                }
+            )
+        }
     }
 
     @ParameterizedTest
