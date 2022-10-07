@@ -29,6 +29,7 @@ class SpotHomeViewModel @Inject constructor(
             val routine = Routine(
                 name = name.trim(),
                 description = description.trim(),
+                index = routines.value?.size ?: 0
             )
             routineRepository.addRoutine(routine)
             loadRoutines()

@@ -56,9 +56,9 @@ class SpotHomeViewModelTest {
     @Test
     fun `routines is loaded`() = runTest {
         val routines = listOf(
-            Routine(name = "Routine 1", description = "Description 1"),
-            Routine(name = "Routine 2", description = "Description 2"),
-            Routine(name = "Routine 3", description = "Description 3"),
+            Routine(name = "Routine 1", description = "Description 1", index = 0),
+            Routine(name = "Routine 2", description = "Description 2", index = 1),
+            Routine(name = "Routine 3", description = "Description 3", index = 2),
         )
         coEvery { repositoryMock.getAllRoutines() } returns routines
 
@@ -93,6 +93,35 @@ class SpotHomeViewModelTest {
 
         assertThat(routines[0].name).isEqualTo("Some Routine")
         assertThat(routines[0].description).isEqualTo("some description")
+        assertThat(routines[0].index).isEqualTo(0)
+    }
+
+    @Test
+    fun `addRoutine add with index on the end`() = runTest {
+        val routines = mutableListOf(
+            Routine(name = "Routine 1", description = "Description 1", index = 0),
+            Routine(name = "Routine 2", description = "Description 2", index = 1),
+            Routine(name = "Routine 3", description = "Description 3", index = 2),
+        )
+        coEvery { repositoryMock.getAllRoutines() } returns routines
+        coEvery { repositoryMock.addRoutine(any()) } answers {
+            routines.add(firstArg())
+        }
+
+        viewModel.loadRoutines()
+
+        val loadedRoutines = viewModel.routines.value
+        assertThat(loadedRoutines).hasSize(3)
+
+        viewModel.addRoutine("Some Routine", "some description")
+
+        coVerify { repositoryMock.addRoutine(any()) }
+
+        assertThat(loadedRoutines).hasSize(4)
+
+        assertThat(routines[3].name).isEqualTo("Some Routine")
+        assertThat(routines[3].description).isEqualTo("some description")
+        assertThat(routines[3].index).isEqualTo(3)
     }
 
     @Test
@@ -116,11 +145,11 @@ class SpotHomeViewModelTest {
 
     @Test
     fun `deleteRoutine deletes from the repository and reloads`() = runTest {
-        val routine1 = Routine(name = "Routine 1", description = "Description 1")
+        val routine1 = Routine(name = "Routine 1", description = "Description 1", index = 0)
         val routines = mutableListOf(
             routine1,
-            Routine(name = "Routine 2", description = "Description 2"),
-            Routine(name = "Routine 3", description = "Description 3"),
+            Routine(name = "Routine 2", description = "Description 2", index = 1),
+            Routine(name = "Routine 3", description = "Description 3", index = 2),
         )
         coEvery { repositoryMock.getAllRoutines() } returns routines
         coEvery { repositoryMock.deleteRoutine(any()) } answers {
