@@ -61,6 +61,10 @@ android {
         }
     }
     buildToolsVersion = "33.0.0"
+
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
 }
 
 detekt {
@@ -83,7 +87,7 @@ dependencies {
     // Compose
     implementation("androidx.activity:activity-compose:${Versions.ACTIVITY_COMPOSE}")
     implementation("androidx.navigation:navigation-compose:${Versions.NAVIGATION_COMPOSE}")
-    implementation("com.google.accompanist:accompanist-navigation-animation:${Versions.ANIMATED_NAVIGATION}")
+    implementation("com.google.accompanist:accompanist-navigation-animation:${Versions.ACCOMPANIST}")
     implementation("androidx.compose.ui:ui:${Versions.COMPOSE_UI}")
     implementation("androidx.compose.material:material:${Versions.COMPOSE_MATERIAL}")
     implementation("androidx.compose.ui:ui-tooling-preview:${Versions.COMPOSE_UI}")
@@ -93,6 +97,7 @@ dependencies {
     androidTestImplementation("androidx.arch.core:core-testing:${Versions.CORE_TESTING}")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE_UI}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE_UI}")
+    androidTestImplementation("androidx.room:room-testing:${Versions.ROOM}")
     androidTestImplementation("androidx.test.ext:junit:${Versions.TEST_EXT_JUNIT}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${Versions.ESPRESSO}")
     androidTestImplementation("androidx.test:runner:${Versions.ANDROID_TEST_RUNNER}")

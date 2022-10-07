@@ -8,5 +8,11 @@ data class RoutineWithExercises(
     val routine: Routine,
 
     @Relation(parentColumn = "id", entityColumn = "routineId")
-    val exercises: List<Exercise> = emptyList(),
-)
+    private val exercises: List<Exercise> = emptyList(),
+) {
+    fun getOrderedExercises(): List<Exercise> {
+        return exercises.sortedBy { it.index }
+    }
+
+    fun getExercisesSize(): Int = exercises.size
+}

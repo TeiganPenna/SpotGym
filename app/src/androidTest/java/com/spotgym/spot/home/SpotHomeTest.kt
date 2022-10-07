@@ -85,8 +85,8 @@ class SpotHomeTest {
 
     @Test
     fun `when loads routines should display them`(): Unit = runBlocking {
-        routineDao.insert(Routine(name = "Foo", description = "Some description"))
-        routineDao.insert(Routine(name = "Bar", description = "Some other description"))
+        routineDao.insert(Routine(name = "Foo", description = "Some description", index = 0))
+        routineDao.insert(Routine(name = "Bar", description = "Some other description", index = 1))
 
         setUpHome()
 
@@ -98,7 +98,7 @@ class SpotHomeTest {
 
     @Test
     fun `when loads routine clicked should navigate with id`(): Unit = runBlocking {
-        routineDao.insert(Routine(id = 4, name = "Foo", description = "Some description"))
+        routineDao.insert(Routine(id = 4, name = "Foo", description = "Some description", index = 0))
 
         var routineId: Int? = null
 
@@ -229,7 +229,7 @@ class SpotHomeTest {
 
     @Test
     fun `when routine swiped should display dialog`(): Unit = runBlocking {
-        routineDao.insert(Routine(name = "Foo", description = "Some description"))
+        routineDao.insert(Routine(name = "Foo", description = "Some description", index = 0))
 
         setUpHome()
 
@@ -243,7 +243,7 @@ class SpotHomeTest {
 
     @Test
     fun `when delete cancelled should do nothing`(): Unit = runBlocking {
-        routineDao.insert(Routine(name = "Foo", description = "Some description"))
+        routineDao.insert(Routine(name = "Foo", description = "Some description", index = 0))
 
         setUpHome()
 
@@ -260,7 +260,7 @@ class SpotHomeTest {
 
     @Test
     fun `when routine deleted should not be in the repository`(): Unit = runBlocking {
-        routineDao.insert(Routine(name = "Foo", description = "Some description"))
+        routineDao.insert(Routine(name = "Foo", description = "Some description", index = 0))
 
         setUpHome()
 
@@ -275,11 +275,11 @@ class SpotHomeTest {
 
     @Test
     fun `when routine deleted should delete associated exercises`(): Unit = runBlocking {
-        routineDao.insert(Routine(id = 1, name = "Foo", description = "Some description"))
-        routineDao.insert(Routine(id = 2, name = "Bar", description = "Some description"))
+        routineDao.insert(Routine(id = 1, name = "Foo", description = "Some description", index = 0))
+        routineDao.insert(Routine(id = 2, name = "Bar", description = "Some description", index = 1))
         val exerciseDao = db.exerciseDao()
-        exerciseDao.insert(Exercise(name = "Exercise 1", description = "foo", routineId = 1))
-        exerciseDao.insert(Exercise(name = "Exercise 2", description = "bar", routineId = 2))
+        exerciseDao.insert(Exercise(name = "Exercise 1", description = "foo", routineId = 1, index = 0))
+        exerciseDao.insert(Exercise(name = "Exercise 2", description = "bar", routineId = 2, index = 1))
 
         setUpHome()
 

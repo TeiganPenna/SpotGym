@@ -47,6 +47,7 @@ class ExercisesViewModel @Inject constructor(
                 name = name.trim(),
                 description = description.trim(),
                 routineId = routineId,
+                index = routineData?.getExercisesSize() ?: 0
             )
             exerciseRepository.addExercise(exercise)
             loadRoutineData(context, routineId)

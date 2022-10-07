@@ -33,4 +33,7 @@ data class Exercise(
 
     @ColumnInfo(name = "routineId")
     val routineId: Int,
+
+    @ColumnInfo(name = "exerciseIndex")
+    val index: Int,
 )
