@@ -75,6 +75,26 @@ class ExercisesViewModel @Inject constructor(
         }
     }
 
+    fun moveExercise(fromIndex: Int, toIndex: Int) {
+        _exercises.value = _exercises.value?.toMutableList()?.apply {
+            add(toIndex, removeAt(fromIndex))
+        }
+
+        viewModelScope.launch {
+            val exercisesToUpdate = _exercises.value
+                ?.filterIndexed { index, exercise ->
+                    if (exercise.index != index) {
+                        exercise.index = index
+                        return@filterIndexed true
+                    }
+                    return@filterIndexed false
+                }
+            if (exercisesToUpdate != null) {
+                exerciseRepository.updateExercises(exercisesToUpdate)
+            }
+        }
+    }
+
     @SuppressWarnings("ReturnCount")
     fun validateExercise(
         context: Context,
