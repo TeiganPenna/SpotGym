@@ -9,6 +9,7 @@ interface RoutineRepository {
     suspend fun getRoutine(id: Int): Routine?
     suspend fun addRoutine(routine: Routine)
     suspend fun updateRoutine(routine: Routine)
+    suspend fun updateRoutines(routines: List<Routine>)
     suspend fun deleteRoutine(routine: Routine)
 }
 
@@ -26,6 +27,10 @@ class RoutineRepositoryImpl
 
     override suspend fun updateRoutine(routine: Routine) {
         routineDao.update(routine)
+    }
+
+    override suspend fun updateRoutines(routines: List<Routine>) {
+        routineDao.updateMany(routines)
     }
 
     override suspend fun deleteRoutine(routine: Routine) {

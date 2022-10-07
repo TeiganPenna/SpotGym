@@ -17,5 +17,5 @@ data class Routine(
     val description: String,
 
     @ColumnInfo(name = "routineIndex")
-    val index: Int,
+    var index: Int,
 )

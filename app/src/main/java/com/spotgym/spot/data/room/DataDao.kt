@@ -14,6 +14,9 @@ interface DataDao<T> {
     @Update
     suspend fun update(obj: T)
 
+    @Update
+    suspend fun updateMany(objs: List<T>)
+
     @Delete
     suspend fun delete(obj: T)
 }

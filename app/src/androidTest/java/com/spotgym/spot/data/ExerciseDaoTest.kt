@@ -18,13 +18,13 @@ class ExerciseDaoTest {
     private lateinit var exerciseDao: ExerciseDao
     private lateinit var db: SpotDatabase
 
-    private val routine1 = Routine(1, "1", "some description", 0)
-    private val routine2 = Routine(2, "2", "some description", 1)
-    private val routine3 = Routine(3, "3", "some description", 3)
+    private lateinit var routine1: Routine
+    private lateinit var routine2: Routine
+    private lateinit var routine3: Routine
 
-    private val exercise1 = Exercise(1, "A", "some description", routine1.id, 2)
-    private val exercise2 = Exercise(2, "B", "some description", routine1.id, 0)
-    private val exercise3 = Exercise(3, "C", "some description", routine2.id, 0)
+    private lateinit var exercise1: Exercise
+    private lateinit var exercise2: Exercise
+    private lateinit var exercise3: Exercise
 
     @BeforeEach
     fun beforeEach() = runBlocking {
@@ -38,9 +38,17 @@ class ExerciseDaoTest {
         exerciseDao = db.exerciseDao()
         routineDao = db.routineDao()
 
+        routine1 = Routine(1, "1", "some description", 0)
+        routine2 = Routine(2, "2", "some description", 1)
+        routine3 = Routine(3, "3", "some description", 3)
+
         routineDao.insert(routine1)
         routineDao.insert(routine2)
         routineDao.insert(routine3)
+
+        exercise1 = Exercise(1, "A", "some description", routine1.id, 2)
+        exercise2 = Exercise(2, "B", "some description", routine1.id, 0)
+        exercise3 = Exercise(3, "C", "some description", routine2.id, 0)
 
         exerciseDao.insert(exercise1)
         exerciseDao.insert(exercise3)
@@ -103,5 +111,19 @@ class ExerciseDaoTest {
         val exerciseList = exerciseDao.getAll()
         assertThat(exerciseList).hasSize(1)
         assertThat(exerciseList[0]).isEqualTo(exercise3)
+    }
+
+    @Test
+    fun `update exercises`(): Unit = runBlocking {
+        exercise1.index = 0
+        exercise2.index = 1
+        exercise3.index = 2
+        exerciseDao.updateMany(listOf(exercise1, exercise2, exercise3))
+
+        val exerciseList = exerciseDao.getAll()
+        assertThat(exerciseList).hasSize(3)
+        assertThat(exerciseList[0]).isEqualTo(exercise1)
+        assertThat(exerciseList[1]).isEqualTo(exercise2)
+        assertThat(exerciseList[2]).isEqualTo(exercise3)
     }
 }
