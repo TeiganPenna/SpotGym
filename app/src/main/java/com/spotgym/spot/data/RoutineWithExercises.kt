@@ -13,6 +13,4 @@ data class RoutineWithExercises(
     fun getOrderedExercises(): List<Exercise> {
         return exercises.sortedBy { it.index }
     }
-
-    fun getExercisesSize(): Int = exercises.size
 }

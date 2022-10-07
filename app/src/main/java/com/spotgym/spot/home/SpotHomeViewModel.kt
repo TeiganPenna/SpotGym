@@ -17,7 +17,7 @@ class SpotHomeViewModel @Inject constructor(
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private val _routines: MutableStateFlow<List<Routine>?> = MutableStateFlow(null)
+    private val _routines = MutableStateFlow<List<Routine>?>(null)
     val routines: StateFlow<List<Routine>?> = _routines
 
     suspend fun loadRoutines() {

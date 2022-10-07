@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,10 +53,10 @@ fun ExercisesPage(
         viewModel.loadRoutineData(context, routineId)
     }
 
-    if (viewModel.routineData == null) {
+    if (viewModel.routine.value == null) {
         SpotLoadingPage(modifier)
     } else {
-        val routine = viewModel.routineData!!.routine
+        val routine = viewModel.routine.value!!
 
         var showAddDialog by remember { mutableStateOf(false) }
         if (showAddDialog) {
@@ -86,10 +87,10 @@ fun ExercisesPage(
                     .padding(contentPadding),
                 color = MaterialTheme.colors.background
             ) {
+                val exercises by viewModel.exercises.collectAsState()
                 LazyColumn(modifier = Modifier.padding(10.dp)) {
-                    val exercises = viewModel.routineData!!.getOrderedExercises()
 
-                    items(exercises) { exercise ->
+                    items(exercises!!) { exercise ->
                         ExerciseCard(
                             exercise = exercise,
                             onDismissed = {
