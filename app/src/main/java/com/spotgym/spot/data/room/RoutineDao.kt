@@ -7,7 +7,7 @@ import com.spotgym.spot.data.Routine
 @Dao
 interface RoutineDao : DataDao<Routine> {
 
-    @Query("select * from routines")
+    @Query("select * from routines order by routineIndex")
     suspend fun getAll(): List<Routine>
 
     @Query("select * from routines where id = :id LIMIT 1")
