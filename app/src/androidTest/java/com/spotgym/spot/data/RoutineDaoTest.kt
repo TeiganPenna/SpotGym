@@ -17,9 +17,9 @@ class RoutineDaoTest {
     private lateinit var routineDao: RoutineDao
     private lateinit var db: SpotDatabase
 
-    private val routine1 = Routine(1, "A", "some description", 2)
-    private val routine2 = Routine(2, "B", "some description", 0)
-    private val routine3 = Routine(3, "C", "some description", 0)
+    private lateinit var routine1: Routine
+    private lateinit var routine2: Routine
+    private lateinit var routine3: Routine
 
     @BeforeEach
     fun beforeEach() = runBlocking {
@@ -31,6 +31,10 @@ class RoutineDaoTest {
             .allowMainThreadQueries()
             .build()
         routineDao = db.routineDao()
+
+        routine1 = Routine(1, "A", "some description", 2)
+        routine2 = Routine(2, "B", "some description", 0)
+        routine3 = Routine(3, "C", "some description", 0)
 
         routineDao.insert(routine1)
         routineDao.insert(routine3)
@@ -46,6 +50,7 @@ class RoutineDaoTest {
     fun `get all routines sorted by index`(): Unit = runBlocking {
         val routineList = routineDao.getAll()
 
+        assertThat(routineList).hasSize(3)
         assertThat(routineList[0]).isEqualTo(routine2)
         assertThat(routineList[1]).isEqualTo(routine3)
         assertThat(routineList[2]).isEqualTo(routine1)
@@ -57,5 +62,19 @@ class RoutineDaoTest {
         routineDao.insert(routine)
         val result = routineDao.getById(4)
         assertThat(result?.id).isEqualTo(4)
+    }
+
+    @Test
+    fun `update routines`(): Unit = runBlocking {
+        routine1.index = 0
+        routine2.index = 1
+        routine3.index = 2
+        routineDao.updateMany(listOf(routine1, routine2, routine3))
+
+        val routineList = routineDao.getAll()
+        assertThat(routineList).hasSize(3)
+        assertThat(routineList[0]).isEqualTo(routine1)
+        assertThat(routineList[1]).isEqualTo(routine2)
+        assertThat(routineList[2]).isEqualTo(routine3)
     }
 }

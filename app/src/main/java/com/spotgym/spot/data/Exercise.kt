@@ -35,5 +35,5 @@ data class Exercise(
     val routineId: Int,
 
     @ColumnInfo(name = "exerciseIndex")
-    val index: Int,
+    var index: Int,
 )

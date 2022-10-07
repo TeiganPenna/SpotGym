@@ -9,6 +9,7 @@ import com.spotgym.spot.data.RoutineWithExercises
 import com.spotgym.spot.home.ExercisesViewModel
 import com.spotgym.spot.ui.service.ToastService
 import io.mockk.coEvery
+import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -59,8 +60,9 @@ class ExercisesViewModelTest {
     }
 
     @Test
-    fun `routineData is null initially`() {
-        assertThat(viewModel.routineData).isNull()
+    fun `routine and exercises are null initially`() {
+        assertThat(viewModel.routine.value).isNull()
+        assertThat(viewModel.exercises.value).isNull()
     }
 
     @Test
@@ -70,8 +72,8 @@ class ExercisesViewModelTest {
 
         viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
 
-        val loadedData = viewModel.routineData
-        assertThat(loadedData).isNull()
+        val loadedRoutine = viewModel.routine.value
+        assertThat(loadedRoutine).isNull()
         verify { toastServiceMock.showText(context, "some error message", Toast.LENGTH_LONG) }
     }
 
@@ -87,10 +89,12 @@ class ExercisesViewModelTest {
 
         viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
 
-        val loadedData = viewModel.routineData
-        assertThat(loadedData).isNotNull
-        assertThat(loadedData!!.routine.name).isEqualTo("Some Routine")
-        assertThat(loadedData.getExercisesSize()).isEqualTo(3)
+        val loadedRoutine = viewModel.routine.value
+        assertThat(loadedRoutine).isNotNull
+        assertThat(loadedRoutine!!.name).isEqualTo("Some Routine")
+        val loadedExercises = viewModel.exercises.value
+        assertThat(loadedExercises).isNotNull
+        assertThat(loadedExercises).hasSize(3)
     }
 
     @Test
@@ -104,14 +108,15 @@ class ExercisesViewModelTest {
 
         viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
 
-        val loadedData = viewModel.routineData
-        assertThat(loadedData!!.getExercisesSize()).isEqualTo(0)
+        var loadedExercises = viewModel.exercises.value
+        assertThat(loadedExercises).isEmpty()
 
         viewModel.addExercise(context, TEST_ROUTINE_ID, "Some Exercise", "some description")
 
         coVerify { repositoryMock.addExercise(any()) }
 
-        assertThat(loadedData.getExercisesSize()).isEqualTo(1)
+        loadedExercises = viewModel.exercises.value
+        assertThat(loadedExercises).hasSize(1)
 
         assertThat(exercises[0].name).isEqualTo("Some Exercise")
         assertThat(exercises[0].description).isEqualTo("some description")
@@ -133,14 +138,15 @@ class ExercisesViewModelTest {
 
         viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
 
-        val loadedData = viewModel.routineData
-        assertThat(loadedData!!.getExercisesSize()).isEqualTo(3)
+        var loadedExercises = viewModel.exercises.value!!
+        assertThat(loadedExercises).hasSize(3)
 
         viewModel.addExercise(context, TEST_ROUTINE_ID, "Some Exercise", "some description")
 
         coVerify { repositoryMock.addExercise(any()) }
 
-        assertThat(loadedData.getExercisesSize()).isEqualTo(4)
+        loadedExercises = viewModel.exercises.value!!
+        assertThat(loadedExercises).hasSize(4)
 
         assertThat(exercises[3].name).isEqualTo("Some Exercise")
         assertThat(exercises[3].description).isEqualTo("some description")
@@ -185,17 +191,89 @@ class ExercisesViewModelTest {
 
         viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
 
-        val loadedData = viewModel.routineData
-        assertThat(loadedData!!.getExercisesSize()).isEqualTo(3)
+        var loadedExercises = viewModel.exercises.value!!
+        assertThat(loadedExercises).hasSize(3)
 
         viewModel.deleteExercise(context, TEST_ROUTINE_ID, exercise1)
 
         coVerify { repositoryMock.deleteExercise(any()) }
 
-        assertThat(loadedData.getExercisesSize()).isEqualTo(2)
+        loadedExercises = viewModel.exercises.value!!
+        assertThat(loadedExercises).hasSize(2)
 
         assertThat(exercises[0].name).isEqualTo("Exercise 2")
         assertThat(exercises[1].name).isEqualTo("Exercise 3")
+    }
+
+    @Test
+    fun `moveExercise moves in loaded exercises`() = runTest {
+        val exercises = listOf(
+            Exercise(name = "Exercise 1", description = "Description 1", routineId = testRoutine.id, index = 0),
+            Exercise(name = "Exercise 2", description = "Description 2", routineId = testRoutine.id, index = 1),
+            Exercise(name = "Exercise 3", description = "Description 3", routineId = testRoutine.id, index = 2),
+        )
+        val data = RoutineWithExercises(testRoutine, exercises)
+        coEvery { repositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID) } returns data
+        coJustRun { repositoryMock.updateExercises(any()) }
+
+        viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
+
+        var loadedExercises = viewModel.exercises.value!!
+        assertThat(loadedExercises).hasSize(3)
+        assertThat(loadedExercises[0].name).isEqualTo("Exercise 1")
+        assertThat(loadedExercises[0].index).isEqualTo(0)
+        assertThat(loadedExercises[1].name).isEqualTo("Exercise 2")
+        assertThat(loadedExercises[1].index).isEqualTo(1)
+        assertThat(loadedExercises[2].name).isEqualTo("Exercise 3")
+        assertThat(loadedExercises[2].index).isEqualTo(2)
+
+        viewModel.moveExercise(2, 0)
+
+        loadedExercises = viewModel.exercises.value!!
+        assertThat(loadedExercises).hasSize(3)
+        assertThat(loadedExercises[0].name).isEqualTo("Exercise 3")
+        assertThat(loadedExercises[0].index).isEqualTo(0)
+        assertThat(loadedExercises[1].name).isEqualTo("Exercise 1")
+        assertThat(loadedExercises[1].index).isEqualTo(1)
+        assertThat(loadedExercises[2].name).isEqualTo("Exercise 2")
+        assertThat(loadedExercises[2].index).isEqualTo(2)
+    }
+
+    @Test
+    fun `moveExercise updates repository for only changed exercises`() = runTest {
+        val exercises = listOf(
+            Exercise(name = "Exercise 1", description = "Description 1", routineId = testRoutine.id, index = 0),
+            Exercise(name = "Exercise 2", description = "Description 2", routineId = testRoutine.id, index = 1),
+            Exercise(name = "Exercise 3", description = "Description 3", routineId = testRoutine.id, index = 2),
+        )
+        val data = RoutineWithExercises(testRoutine, exercises)
+        coEvery { repositoryMock.getRoutineWithExercises(TEST_ROUTINE_ID) } returns data
+        coJustRun { repositoryMock.updateExercises(any()) }
+
+        viewModel.loadRoutineData(context, TEST_ROUTINE_ID)
+
+        viewModel.moveExercise(2, 1)
+
+        val loadedExercises = viewModel.exercises.value!!
+        assertThat(loadedExercises).hasSize(3)
+        assertThat(loadedExercises[0].name).isEqualTo("Exercise 1")
+        assertThat(loadedExercises[0].index).isEqualTo(0)
+        assertThat(loadedExercises[1].name).isEqualTo("Exercise 3")
+        assertThat(loadedExercises[1].index).isEqualTo(1)
+        assertThat(loadedExercises[2].name).isEqualTo("Exercise 2")
+        assertThat(loadedExercises[2].index).isEqualTo(2)
+
+        coVerify {
+            repositoryMock.updateExercises(
+                withArg { updatedExercises ->
+                    assertThat(updatedExercises).hasSize(2)
+                    assertThat(updatedExercises[0].name).isEqualTo("Exercise 3")
+                    assertThat(updatedExercises[0].index).isEqualTo(1)
+                    assertThat(updatedExercises[1].name).isEqualTo("Exercise 2")
+                    assertThat(updatedExercises[1].index).isEqualTo(2)
+                }
+            )
+        }
     }
 
     @ParameterizedTest

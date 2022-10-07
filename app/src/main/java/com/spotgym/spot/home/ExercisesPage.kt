@@ -1,5 +1,6 @@
 package com.spotgym.spot.home
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,12 +22,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -37,6 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.spotgym.spot.R
 import com.spotgym.spot.data.Exercise
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.detectReorderAfterLongPress
+import org.burnoutcrew.reorderable.rememberReorderableLazyListState
+import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 @ExperimentalComposeUiApi
@@ -52,10 +59,10 @@ fun ExercisesPage(
         viewModel.loadRoutineData(context, routineId)
     }
 
-    if (viewModel.routineData == null) {
+    if (viewModel.routine.value == null) {
         SpotLoadingPage(modifier)
     } else {
-        val routine = viewModel.routineData!!.routine
+        val routine = viewModel.routine.value!!
 
         var showAddDialog by remember { mutableStateOf(false) }
         if (showAddDialog) {
@@ -86,16 +93,38 @@ fun ExercisesPage(
                     .padding(contentPadding),
                 color = MaterialTheme.colors.background
             ) {
-                LazyColumn(modifier = Modifier.padding(10.dp)) {
-                    val exercises = viewModel.routineData!!.getOrderedExercises()
+                val exercises by viewModel.exercises.collectAsState()
 
-                    items(exercises) { exercise ->
-                        ExerciseCard(
-                            exercise = exercise,
-                            onDismissed = {
-                                viewModel.deleteExercise(context, routineId, exercise)
-                            }
-                        )
+                val state = rememberReorderableLazyListState(onMove = { from, to ->
+                    viewModel.moveExercise(from.index, to.index)
+                })
+
+                LazyColumn(
+                    state = state.listState,
+                    modifier = Modifier
+                        .reorderable(state)
+                        .detectReorderAfterLongPress(state)
+                        .padding(10.dp)
+                ) {
+                    items(
+                        items = exercises!!,
+                        key = { it.id }
+                    ) { exercise ->
+                        ReorderableItem(
+                            reorderableState = state,
+                            key = exercise.id,
+                            modifier = Modifier.padding(5.dp)
+                        ) { isDragging ->
+                            val elevation = animateDpAsState(if (isDragging) 8.dp else 0.dp)
+
+                            ExerciseCard(
+                                exercise = exercise,
+                                onDismissed = {
+                                    viewModel.deleteExercise(context, routineId, exercise)
+                                },
+                                modifier = Modifier.shadow(elevation.value)
+                            )
+                        }
                     }
                 }
             }
@@ -178,13 +207,14 @@ private fun AddExerciseDialog(
 private fun ExerciseCard(
     exercise: Exercise,
     onDismissed: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     SpotDismissibleCard(
-        onCardClicked = {},
+        onCardClicked = null,
         onDismissed = onDismissed,
         confirmTitle = stringResource(R.string.exercises_dismiss_title, exercise.name),
         confirmBody = stringResource(R.string.exercises_dismiss_body, exercise.name),
-        modifier = Modifier.padding(5.dp),
+        modifier = modifier,
     ) {
         Column(
             modifier = Modifier.padding(15.dp)

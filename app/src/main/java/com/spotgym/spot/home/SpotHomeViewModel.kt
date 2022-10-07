@@ -17,7 +17,7 @@ class SpotHomeViewModel @Inject constructor(
     private val routineRepository: RoutineRepository
 ) : ViewModel() {
 
-    private val _routines: MutableStateFlow<List<Routine>?> = MutableStateFlow(null)
+    private val _routines = MutableStateFlow<List<Routine>?>(null)
     val routines: StateFlow<List<Routine>?> = _routines
 
     suspend fun loadRoutines() {
@@ -40,6 +40,26 @@ class SpotHomeViewModel @Inject constructor(
         viewModelScope.launch {
             routineRepository.deleteRoutine(routine)
             loadRoutines()
+        }
+    }
+
+    fun moveRoutine(fromIndex: Int, toIndex: Int) {
+        _routines.value = _routines.value?.toMutableList()?.apply {
+            add(toIndex, removeAt(fromIndex))
+        }
+
+        viewModelScope.launch {
+            val routinesToUpdate = _routines.value
+                ?.filterIndexed { index, routine ->
+                    if (routine.index != index) {
+                        routine.index = index
+                        return@filterIndexed true
+                    }
+                    return@filterIndexed false
+                }
+            if (routinesToUpdate != null) {
+                routineRepository.updateRoutines(routinesToUpdate)
+            }
         }
     }
 

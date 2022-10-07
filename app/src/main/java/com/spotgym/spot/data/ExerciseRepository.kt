@@ -10,6 +10,7 @@ interface ExerciseRepository {
     suspend fun getRoutineWithExercises(routineId: Int): RoutineWithExercises?
     suspend fun addExercise(exercise: Exercise)
     suspend fun updateExercise(exercise: Exercise)
+    suspend fun updateExercises(exercises: List<Exercise>)
     suspend fun deleteExercise(exercise: Exercise)
 }
 
@@ -30,6 +31,10 @@ class ExerciseRepositoryImpl
 
     override suspend fun updateExercise(exercise: Exercise) {
         exerciseDao.update(exercise)
+    }
+
+    override suspend fun updateExercises(exercises: List<Exercise>) {
+        exerciseDao.updateMany(exercises)
     }
 
     override suspend fun deleteExercise(exercise: Exercise) {
