@@ -9,7 +9,7 @@ object Versions {
     const val DETEKT_TWITTER = "0.0.20"
 
     // App dependencies
-    const val ACCOMPANIST = "0.25.1"
+    const val ACCOMPANIST = "0.28.0"
     const val ACTIVITY_COMPOSE = "1.6.1"
     const val COMPOSE = "1.3.2"
     const val COMPOSE_MATERIAL = "1.3.1"
