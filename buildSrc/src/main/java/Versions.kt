@@ -29,7 +29,7 @@ object Versions {
     const val CORE_TESTING = "2.1.0"
     const val ESPRESSO = "3.5.1"
     const val JUNIT_JUPITER_ANDROID = "1.3.0"
-    const val JUNIT_JUPITER = "5.9.1"
+    const val JUNIT_JUPITER = "5.9.2"
     const val KOTLINX_COROUTINES = "1.6.4"
     const val MOCKK = "1.13.3"
     const val TEST_EXT_JUNIT = "1.1.5"
