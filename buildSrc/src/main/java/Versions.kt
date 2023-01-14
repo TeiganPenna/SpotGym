@@ -13,7 +13,7 @@ object Versions {
     const val ACTIVITY_COMPOSE = "1.6.1"
     const val COMPOSE = "1.3.2"
     const val COMPOSE_MATERIAL = "1.3.1"
-    const val COMPOSE_REORDERABLE = "0.9.2"
+    const val COMPOSE_REORDERABLE = "0.9.6"
     const val COMPOSE_RUNTIME = "1.3.3"
     const val COMPOSE_UI = "1.3.3"
     const val HILT = "2.44.2"
