@@ -20,7 +20,7 @@ object Versions {
     const val HILT_NAVIGATION = "1.0.0"
     const val KTX = "1.9.0"
     const val LIFECYCLE = "2.5.1"
-    const val NAVIGATION_COMPOSE = "2.5.2"
+    const val NAVIGATION_COMPOSE = "2.5.3"
     const val ROOM = "2.4.3"
 
     // Test dependencies
