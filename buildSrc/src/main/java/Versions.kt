@@ -24,7 +24,7 @@ object Versions {
     const val ROOM = "2.5.0"
 
     // Test dependencies
-    const val ANDROID_TEST_RUNNER = "1.4.0"
+    const val ANDROID_TEST_RUNNER = "1.5.2"
     const val ASSERTJ = "3.23.1"
     const val CORE_TESTING = "2.1.0"
     const val ESPRESSO = "3.4.0"
