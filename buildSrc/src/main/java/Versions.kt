@@ -10,7 +10,7 @@ object Versions {
 
     // App dependencies
     const val ACCOMPANIST = "0.25.1"
-    const val ACTIVITY_COMPOSE = "1.6.0"
+    const val ACTIVITY_COMPOSE = "1.6.1"
     const val COMPOSE = "1.3.2"
     const val COMPOSE_MATERIAL = "1.2.1"
     const val COMPOSE_REORDERABLE = "0.9.2"
