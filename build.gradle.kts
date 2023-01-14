@@ -4,8 +4,8 @@ buildscript {
 }
 
 plugins {
-    id("com.android.application") version "7.3.0" apply false
-    id("com.android.library") version "7.3.0" apply false
+    id("com.android.application") version "7.4.0" apply false
+    id("com.android.library") version "7.4.0" apply false
     id("com.github.ben-manes.versions") version "0.42.0" apply false
     id("com.google.dagger.hilt.android") version "2.43.2" apply false
     id("de.mannodermaus.android-junit5") version "1.8.2.1" apply false

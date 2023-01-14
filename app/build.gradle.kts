@@ -15,6 +15,7 @@ android {
     compileSdk = Versions.COMPILE_SDK
 
     defaultConfig {
+        testInstrumentationRunnerArguments += mapOf("runnerBuilder" to "de.mannodermaus.junit5.AndroidJUnit5Builder")
         applicationId = "com.spotgym.spot"
         minSdk = Versions.MIN_SDK
         targetSdk = Versions.TARGET_SDK
@@ -22,9 +23,6 @@ android {
         versionName = AppVersion.Name
 
         testInstrumentationRunner = "com.spotgym.spot.SpotHiltTestRunner"
-        testInstrumentationRunnerArguments += mapOf(
-            "runnerBuilder" to "de.mannodermaus.junit5.AndroidJUnit5Builder"
-        )
         vectorDrawables {
             useSupportLibrary = true
         }
