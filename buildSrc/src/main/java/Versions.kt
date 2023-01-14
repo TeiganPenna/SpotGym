@@ -25,7 +25,7 @@ object Versions {
 
     // Test dependencies
     const val ANDROID_TEST_RUNNER = "1.5.2"
-    const val ASSERTJ = "3.23.1"
+    const val ASSERTJ = "3.24.1"
     const val CORE_TESTING = "2.1.0"
     const val ESPRESSO = "3.5.1"
     const val JUNIT_JUPITER_ANDROID = "1.3.0"
