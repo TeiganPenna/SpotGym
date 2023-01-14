@@ -21,7 +21,7 @@ object Versions {
     const val KTX = "1.9.0"
     const val LIFECYCLE = "2.5.1"
     const val NAVIGATION_COMPOSE = "2.5.3"
-    const val ROOM = "2.4.3"
+    const val ROOM = "2.5.0"
 
     // Test dependencies
     const val ANDROID_TEST_RUNNER = "1.4.0"
