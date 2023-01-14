@@ -38,10 +38,10 @@ jobs:
           arguments: lint
         if: always()
 
-      - name: Execute Gradle 'ktlintCheck' task
+      - name: Execute Gradle 'lintKotlin' task
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: ktlintCheck
+          arguments: lintKotlin
         if: always()
 
       - name: Execute Gradle 'detekt' task

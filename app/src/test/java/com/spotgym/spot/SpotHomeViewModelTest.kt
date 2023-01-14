@@ -29,6 +29,7 @@ class SpotHomeViewModelTest {
 
     @MockK
     private lateinit var context: Context
+
     @MockK
     private lateinit var repositoryMock: RoutineRepository
 

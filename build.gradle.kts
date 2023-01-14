@@ -11,7 +11,7 @@ plugins {
     id("de.mannodermaus.android-junit5") version "1.8.2.1" apply false
     id("io.gitlab.arturbosch.detekt") version "1.21.0" apply false
     id("org.jetbrains.kotlin.android") version "1.7.20" apply false // cannot increase version, compose 1.3.2 only supports up to kotlin 1.7.20
-    id("org.jlleitschuh.gradle.ktlint") version "11.0.0" apply false
+    id("org.jmailen.kotlinter") version "3.13.0" apply false
 }
 
 task("clean") {
