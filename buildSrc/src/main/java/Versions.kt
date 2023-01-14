@@ -31,6 +31,8 @@ object Versions {
     const val JUNIT_JUPITER_ANDROID = "1.3.0"
     const val JUNIT_JUPITER = "5.9.2"
     const val KOTLINX_COROUTINES = "1.6.4"
+    const val MOCKITO_ANDROID = "4.11.0"
+    const val MOCKITO_KOTLIN = "4.1.0"
     const val MOCKK = "1.13.3"
     const val TEST_EXT_JUNIT = "1.1.5"
 
