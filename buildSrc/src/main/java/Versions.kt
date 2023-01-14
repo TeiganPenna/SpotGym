@@ -6,7 +6,7 @@ object Versions {
     const val MIN_SDK = 30
     const val TARGET_SDK = 30
 
-    const val DETEKT_TWITTER = "0.0.18"
+    const val DETEKT_TWITTER = "0.0.20"
 
     // App dependencies
     const val ACCOMPANIST = "0.25.1"
