@@ -34,8 +34,10 @@ class ExercisesViewModelTest {
 
     @MockK
     private lateinit var context: Context
+
     @MockK
     private lateinit var repositoryMock: ExerciseRepository
+
     @MockK
     private lateinit var toastServiceMock: ToastService
 

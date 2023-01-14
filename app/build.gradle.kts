@@ -6,8 +6,8 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
     kotlin("kapt")
     id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
     id("kotlin-kapt")
+    id("org.jmailen.kotlinter")
 }
 
 android {
@@ -15,6 +15,7 @@ android {
     compileSdk = Versions.COMPILE_SDK
 
     defaultConfig {
+        testInstrumentationRunnerArguments += mapOf("runnerBuilder" to "de.mannodermaus.junit5.AndroidJUnit5Builder")
         applicationId = "com.spotgym.spot"
         minSdk = Versions.MIN_SDK
         targetSdk = Versions.TARGET_SDK
@@ -22,9 +23,6 @@ android {
         versionName = AppVersion.Name
 
         testInstrumentationRunner = "com.spotgym.spot.SpotHiltTestRunner"
-        testInstrumentationRunnerArguments += mapOf(
-            "runnerBuilder" to "de.mannodermaus.junit5.AndroidJUnit5Builder"
-        )
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -71,6 +69,12 @@ detekt {
     config = files("${project.rootDir}/config/detekt.yml")
 }
 
+kotlinter {
+    ignoreFailures = false
+    disabledRules = arrayOf("trailing-comma-on-call-site", "trailing-comma-on-declaration-site")
+    experimentalRules = false
+}
+
 dependencies {
     detektPlugins("com.twitter.compose.rules:detekt:${Versions.DETEKT_TWITTER}")
 
@@ -109,8 +113,8 @@ dependencies {
     androidTestImplementation("io.mockk:mockk-android:${Versions.MOCKK}")
     androidTestImplementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
     androidTestImplementation("org.junit.jupiter:junit-jupiter-api:${Versions.JUNIT_JUPITER}")
-    androidTestImplementation("org.mockito:mockito-android:4.8.0")
-    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    androidTestImplementation("org.mockito:mockito-android:${Versions.MOCKITO_ANDROID}")
+    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:${Versions.MOCKITO_KOTLIN}")
 
     debugImplementation("androidx.compose.ui:ui-tooling:${Versions.COMPOSE_UI}")
     debugImplementation("androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE_UI}")
